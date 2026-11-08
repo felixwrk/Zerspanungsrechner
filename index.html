@@ -5,11 +5,26 @@
 :root{--bg:#f2f4f7;--card:#fff;--tx:#1b1f24;--mu:#667;--ac:#0a84ff;--bd:#dde1e6}
 body.dark{--bg:#111418;--card:#1c2128;--tx:#e8eaed;--mu:#9aa3ad;--ac:#3ea6ff;--bd:#2c333b}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx);transition:background .3s,color .3s}
-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:5}
-#burger{font-size:26px;background:none;border:0;color:var(--tx);cursor:pointer}
+header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:11}
+#burger{width:40px;height:40px;background:none;border:0;cursor:pointer;position:relative;z-index:12;padding:0}
+#burger span{position:absolute;left:8px;width:24px;height:2.5px;border-radius:2px;background:var(--tx);transition:transform .45s cubic-bezier(.7,-0.4,.3,1.4),opacity .25s,top .3s}
+#burger span:nth-child(1){top:12px}#burger span:nth-child(2){top:19px}#burger span:nth-child(3){top:26px}
+#burger.x span:nth-child(1){top:19px;transform:rotate(45deg)}#burger.x span:nth-child(2){opacity:0;transform:translateX(-12px)}#burger.x span:nth-child(3){top:19px;transform:rotate(-45deg)}
+#helpBtn{margin-left:auto;width:36px;height:36px;border-radius:50%;border:2px solid var(--ac);background:none;color:var(--ac);font-size:18px;font-weight:700;cursor:pointer;transition:transform .3s,background .2s,color .2s}
+#helpBtn.on{background:var(--ac);color:#fff;transform:rotate(360deg)}
+#helpBox{position:fixed;top:66px;right:12px;width:min(380px,calc(100% - 24px));max-height:72vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px 18px 8px;z-index:7;box-shadow:0 18px 50px #0006;
+ clip-path:circle(0% at calc(100% - 22px) -10px);opacity:0;pointer-events:none;transition:clip-path .55s cubic-bezier(.2,.8,.2,1),opacity .3s}
+#helpBox.open{clip-path:circle(150% at calc(100% - 22px) -10px);opacity:1;pointer-events:auto}
+#helpBox h3{margin:0 0 6px}#helpBox h4{margin:14px 0 4px;color:var(--ac)}#helpBox p,#helpBox li{font-size:14px;line-height:1.5}#helpBox ul{padding-left:18px;margin:4px 0}
+#helpBox .about{border-top:1px solid var(--bd);margin-top:12px;padding-top:6px;color:var(--mu)}
 h1{font-size:19px;margin:0}
-#menu{position:fixed;top:0;left:-280px;width:270px;height:100%;background:var(--card);border-right:1px solid var(--bd);z-index:10;transition:left .3s;display:flex;flex-direction:column;padding:18px}
-#menu.open{left:0}#shade{display:none;position:fixed;inset:0;background:#0006;z-index:9}#shade.open{display:block}
+#menu{position:fixed;top:0;left:0;width:280px;height:100%;background:var(--card);border-right:1px solid var(--bd);border-radius:0 26px 26px 0;z-index:10;display:flex;flex-direction:column;padding:70px 18px 18px;
+ transform:translateX(-110%) skewY(-4deg);transform-origin:left top;transition:transform .6s cubic-bezier(.2,1.25,.3,1);box-shadow:20px 0 60px #0000}
+#menu.open{transform:none;box-shadow:20px 0 60px #0007}
+#menu h3,#menu .nav,#menu .settings{opacity:0;transform:translateX(-30px);transition:opacity .35s,transform .45s cubic-bezier(.2,1.4,.4,1)}
+#menu.open h3,#menu.open .nav,#menu.open .settings{opacity:1;transform:none}
+#menu.open .nav:nth-of-type(1){transition-delay:.12s}#menu.open .nav:nth-of-type(2){transition-delay:.18s}#menu.open .nav:nth-of-type(3){transition-delay:.24s}#menu.open .nav:nth-of-type(4){transition-delay:.30s}#menu.open .settings{transition-delay:.38s}
+#shade{position:fixed;inset:0;background:#0007;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9;opacity:0;pointer-events:none;transition:opacity .4s}#shade.open{opacity:1;pointer-events:auto}
 #menu button.nav{display:block;width:100%;text-align:left;padding:13px;margin:3px 0;border:0;border-radius:10px;background:none;color:var(--tx);font-size:16px;cursor:pointer}
 #menu button.nav:hover,#menu button.nav.act{background:var(--ac);color:#fff}
 .settings{margin-top:auto;border-top:1px solid var(--bd);padding-top:12px}
@@ -25,8 +40,16 @@ input,select{padding:11px;border-radius:10px;border:1px solid var(--bd);backgrou
 .res{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .r{background:var(--bg);border-radius:12px;padding:12px}.r b{display:block;font-size:22px;color:var(--ac)}.r small{color:var(--mu)}
 .hint{font-size:13px;color:var(--mu)}
-#intro{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:8}
-#intro.show{display:flex}#intro h2{margin-top:24px;opacity:0;animation:fade 1s .4s forwards}
+#intro{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:8;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s .5s}
+#intro.show{opacity:1;visibility:visible;transition:opacity .4s ease}
+#intro .cw{transform:scale(.3) rotate(-120deg);opacity:0;transition:transform .8s cubic-bezier(.2,1.3,.3,1),opacity .4s}
+#intro.show .cw{transform:none;opacity:1}
+#intro.out .cw{transform:scale(2.2);opacity:0;transition:transform .55s cubic-bezier(.6,0,.8,.4),opacity .45s}
+#intro h2{margin-top:24px;opacity:0;transform:translateY(14px);letter-spacing:.3em;transition:opacity .5s .25s,transform .6s .25s cubic-bezier(.2,1.2,.3,1),letter-spacing .8s .25s}
+#intro.show h2{opacity:1;transform:none;letter-spacing:.02em}#intro.out h2{opacity:0;transform:translateY(-10px);transition:opacity .3s,transform .3s}
+.page.on .card{animation:cardIn .65s cubic-bezier(.2,1,.3,1) both}
+.page.on .card:nth-of-type(2){animation-delay:.08s}.page.on .card:nth-of-type(3){animation-delay:.16s}.page.on .card:nth-of-type(4){animation-delay:.24s}
+@keyframes cardIn{from{opacity:0;transform:translateY(26px) scale(.98);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
 .cutter{width:180px;height:180px;animation:spin 1.2s linear infinite;filter:drop-shadow(0 10px 20px #0004)}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes fade{to{opacity:1}}
 .page{display:none;animation:fade .4s}.page.on{display:block}
@@ -42,7 +65,7 @@ body.noanim *{animation:none!important;transition:none!important}body.noanim .pa
 .feedT{animation:ft 5s ease-in-out infinite alternate}@keyframes ft{from{transform:translate(255px,0)}to{transform:translate(125px,0)}}
 .chips circle{opacity:0;animation:ch .7s ease-out infinite}
 @keyframes ch{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
-</style></head><body>
+</style></head><body class="dark">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="shH" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
 <linearGradient id="shV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
@@ -60,11 +83,12 @@ body.noanim *{animation:none!important;transition:none!important}body.noanim .pa
 <label>Dunkelmodus <input type="checkbox" id="dark" style="width:auto"></label>
 <label>Animationen <input type="checkbox" id="anim" checked style="width:auto"></label></div>
 </nav>
-<header><button id="burger" onclick="tog()">☰</button><h1 id="title">Zerspanungsrechner</h1></header>
-<div id="intro"><svg class="cutter" viewBox="0 0 100 100"><defs><radialGradient id="g" cx="40%" cy="35%"><stop offset="0" stop-color="#eef"/><stop offset="1" stop-color="#778"/></radialGradient></defs>
+<header><button id="burger" onclick="tog()" aria-label="Menü"><span></span><span></span><span></span></button><h1 id="title">Zerspanungsrechner</h1><button id="helpBtn" aria-label="Hilfe">?</button></header>
+<div id="helpBox"></div>
+<div id="intro"><div class="cw"><svg class="cutter" viewBox="0 0 100 100"><defs><radialGradient id="g" cx="40%" cy="35%"><stop offset="0" stop-color="#eef"/><stop offset="1" stop-color="#778"/></radialGradient></defs>
 <circle cx="50" cy="50" r="44" fill="url(#g)"/><g fill="#445">
 <path d="M50 6 L60 30 L50 28Z"/><path d="M94 50 L70 60 L72 50Z"/><path d="M50 94 L40 70 L50 72Z"/><path d="M6 50 L30 40 L28 50Z"/></g>
-<circle cx="50" cy="50" r="14" fill="#334"/><circle cx="50" cy="50" r="6" fill="#aab"/></svg><h2 id="introT"></h2></div>
+<circle cx="50" cy="50" r="14" fill="#334"/><circle cx="50" cy="50" r="6" fill="#aab"/></svg></div><h2 id="introT"></h2></div>
 <main>
 <section class="page on" id="p-start"><div class="card"><h2>Willkommen 👋</h2><p>Öffne oben links das Menü und wähle einen Bereich.</p></div></section>
 
@@ -183,14 +207,33 @@ function pass(){const M=num("pM"),t=($("pT").value||"").trim(),m=t.match(/^(JS|j
  const mm=v=>(M+v/1000).toFixed(3);
  $("pRes").innerHTML='<h3>'+M+' '+t+' – '+(hole?"Bohrung":"Welle")+'</h3><div class="res">'+box("Oberes Abmaß",(up>0?"+":"")+up,"µm")+box("Unteres Abmaß",(lo>0?"+":"")+lo,"µm")+box("Größtmaß",mm(up),"mm")+box("Kleinstmaß",mm(lo),"mm")+'</div><p class="hint">Toleranzfeld: '+T+' µm (IT'+g+')</p>'}
 const NAMES={fraesen:"Fräsen",bohren:"Bohren",drehen:"Drehen",passung:"Passungen"};
-function tog(){$("menu").classList.toggle("open");$("shade").classList.toggle("open")}
+const HELP={
+start:{t:"Willkommen",e:"Dieser Rechner hilft dir, Schnittdaten fürs Fräsen, Bohren und Drehen zu bestimmen und ISO-Passungen nachzuschlagen.",a:["Öffne oben links das Menü und wähle einen Bereich.","Tippe in jedem Bereich auf das Fragezeichen, um Tipps zu sehen.","Alle Werte sind Richtwerte – im Zweifel gelten die Angaben des Werkzeugherstellers."]},
+fraesen:{t:"Fräsen",e:"Du gibst nur Fräserdurchmesser, Zähnezahl und Vorschub je Zahn ein. Wählst du Werkstoff und Schneidstoff, holt sich der Rechner die passende Schnittgeschwindigkeit. Daraus berechnet er: n = vc · 1000 / (π · D) und vf = n · z · fz. Alternativ kannst du vc oder die Drehzahl selbst eintragen.",
+ a:["Herstellerangaben des Fräsers haben immer Vorrang vor diesen Richtwerten.","Kleine Fräser brauchen einen kleineren Vorschub je Zahn.","Bei Vollnut (Fräser voll im Material) oder langer Auskraglänge vc und fz reduzieren.","Prüfe die Maximaldrehzahl deiner Maschine – wird sie überschritten, vf passend herunterrechnen.","Alu mit Kühlschmierstoff oder Minimalmengenschmierung fräsen, Grauguss meist trocken.","Wenn möglich im Gleichlauf fräsen – das schont die Schneide."]},
+bohren:{t:"Bohren",e:"Mit Bohrerdurchmesser und Vorschub pro Umdrehung berechnet der Rechner die Drehzahl und die Vorschubgeschwindigkeit vf = n · f. Die Schnittgeschwindigkeit wird beim Bohren mit ca. 70 % des Fräswerts angesetzt.",
+ a:["Als grober Anhalt für den Vorschub gilt f ≈ 0,01 bis 0,02 × D (mm/U).","Vorher zentrieren oder anbohren, damit der Bohrer nicht verläuft.","Bei tiefen Bohrungen (über ca. 3 × D) regelmäßig entspanen.","Ausreichend kühlen – vor allem bei Edelstahl.","Hartmetallbohrer brauchen eine stabile Aufspannung, nicht von Hand bohren."]},
+drehen:{t:"Drehen",e:"Du gibst den aktuellen Werkstückdurchmesser und den Vorschub pro Umdrehung ein. Daraus berechnet der Rechner die Drehzahl und die Vorschubgeschwindigkeit vf = n · f.",
+ a:["Beim Plandrehen ändert sich der Durchmesser – damit auch die richtige Drehzahl (an der CNC: konstante Schnittgeschwindigkeit mit Drehzahlbegrenzung).","Die Maximaldrehzahl des Futters beachten.","Ohne Reitstock höchstens ca. 3 × D ausspannen.","Die Schneide muss genau auf Drehmitte stehen.","Schruppen mit großem Vorschub, Schlichten mit kleinem – der Eckenradius bestimmt mit, wie glatt die Oberfläche wird."]},
+passung:{t:"Passungen",e:"Gib Nennmaß und Toleranz ein, z. B. 5 und H7. Großbuchstaben stehen für Bohrungen, Kleinbuchstaben für Wellen. Der Rechner zeigt die Abmaße sowie das Größt- und Kleinstmaß.",
+ a:["Unterstützt werden H, h, JS, js, G, g, F und f mit IT5 bis IT11, Nennmaße bis 500 mm.","Typische Kombination: H7/g6 ergibt eine Spielpassung (leicht drehbar).","Bei 20 °C messen – warme Teile messen sich größer.","Das Messmittel muss deutlich genauer sein als die Toleranz (z. B. Bügelmessschraube statt Messschieber)."]}};
+let cur="start";
+function renderHelp(){const h=HELP[cur];$("helpBox").innerHTML="<h3>"+h.t+"</h3><h4>So funktioniert's</h4><p>"+h.e+"</p><h4>Worauf du achten musst</h4><ul>"+h.a.map(x=>"<li>"+x+"</li>").join("")+'</ul><p class="about">Über die Website: kostenloser Zerspanungsrechner für die Werkstatt. Alles wird direkt in deinem Browser berechnet, nichts wird gespeichert oder verschickt. Die Werte sind Richtwerte und ersetzen keine Herstellerangaben.</p>'}
+function closeHelp(){$("helpBox").classList.remove("open");$("helpBtn").classList.remove("on")}
+$("helpBtn").onclick=e=>{e.stopPropagation();const o=!$("helpBox").classList.contains("open");if(o){renderHelp();$("helpBox").classList.add("open");$("helpBtn").classList.add("on")}else closeHelp()};
+document.addEventListener("click",e=>{if(!$("helpBox").contains(e.target)&&e.target!==$("helpBtn"))closeHelp()});
+function tog(){closeHelp();$("menu").classList.toggle("open");$("shade").classList.toggle("open");$("burger").classList.toggle("x")}
 document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{tog();document.querySelectorAll(".nav").forEach(x=>x.classList.remove("act"));b.classList.add("act");
- const p=b.dataset.p,go=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));$("p-"+p).classList.add("on");$("title").textContent=NAMES[p]};
- if($("anim").checked){$("introT").textContent=NAMES[p];$("intro").classList.add("show");setTimeout(()=>{go();$("intro").classList.remove("show")},1600)}else go()});
+ const p=b.dataset.p,go=()=>{cur=p;document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));$("p-"+p).classList.add("on");$("title").textContent=NAMES[p]};
+ if(p===cur)return;
+ if($("anim").checked){const it=$("intro");$("introT").textContent=NAMES[p];it.classList.remove("out");
+  setTimeout(()=>it.classList.add("show"),120);
+  setTimeout(()=>{go();window.scrollTo(0,0);it.classList.add("out");it.classList.remove("show")},1450);
+  setTimeout(()=>it.classList.remove("out"),2100)}else go()});
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
 $("dark").onchange=e=>{document.body.classList.toggle("dark",e.target.checked);ls("dark",e.target.checked)};
 $("anim").onchange=e=>{document.body.classList.toggle("noanim",!e.target.checked);ls("anim",e.target.checked)};
-if(ls("dark")==="true"){$("dark").checked=true;document.body.classList.add("dark")}
+if(ls("dark")!=="false"){$("dark").checked=true;document.body.classList.add("dark")}else document.body.classList.remove("dark")
 if(ls("anim")==="false"){$("anim").checked=false;document.body.classList.add("noanim")}
 $("pM").oninput=pass;$("pT").oninput=pass;calc();
 </script></body></html>
