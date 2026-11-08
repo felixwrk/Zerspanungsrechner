@@ -1,226 +1,181 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="dark">
+<html lang='de' data-theme='dark'>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <title>Zerspanungsrechner</title>
 <style>
-  :root {
-    --bg: #0d1117; --card: #161b22; --text: #e6edf3; --muted: #8b949e;
-    --border: #30363d; --input: #0d1117; --fraesen: #3b82f6; --drehen: #f59e0b;
-    --shadow: 0 10px 40px rgba(0,0,0,0.4);
-  }
-  [data-theme="light"] {
-    --bg: #f0f4f8; --card: #ffffff; --text: #1a202c; --muted: #64748b;
-    --border: #e2e8f0; --input: #f8fafc;
-    --shadow: 0 10px 40px rgba(0,0,0,0.08);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--text);
-    min-height: 100vh; padding: 16px;
-    transition: background .4s, color .4s;
-  }
-  header {
-    max-width: 1100px; margin: 0 auto 24px;
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    animation: fadeDown .7s ease both;
-  }
-  h1 { font-size: clamp(1.4rem, 5vw, 2.2rem); font-weight: 800; letter-spacing: -0.02em; }
-  h1 span { background: linear-gradient(90deg, var(--fraesen), var(--drehen)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .toggle {
-    background: var(--card); border: 1px solid var(--border); color: var(--text);
-    border-radius: 999px; padding: 10px 18px; font-size: 0.95rem; cursor: pointer;
-    box-shadow: var(--shadow); transition: transform .2s;
-  }
-  .toggle:hover { transform: scale(1.06); }
-  .toggle:active { transform: scale(0.95); }
-  .grid {
-    max-width: 1100px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px;
-  }
-  .card {
-    background: var(--card); border: 1px solid var(--border); border-radius: 24px;
-    padding: 24px; box-shadow: var(--shadow);
-    animation: fadeUp .8s ease both;
-    transition: transform .3s, background .4s, border-color .4s;
-  }
-  .card:nth-child(2) { animation-delay: .15s; }
-  .card:hover { transform: translateY(-4px); }
-  .card.fraesen { --accent: var(--fraesen); }
-  .card.drehen { --accent: var(--drehen); }
-  .card h2 { color: var(--accent); font-size: 1.5rem; margin-bottom: 4px; }
-  .stage {
-    margin: 12px 0 20px; border-radius: 16px; overflow: hidden;
-    background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%);
-  }
-  .stage svg { width: 100%; height: 170px; display: block; }
-  .spin { transform-box: fill-box; transform-origin: center; animation: spin 2s linear infinite; }
-  .spin-slow { transform-box: fill-box; transform-origin: center; animation: spin 4s linear infinite; }
-  .feed { animation: feed 2.5s ease-in-out infinite alternate; }
-  .chip { animation: float 3s ease-in-out infinite; }
-  h3 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 22px 0 10px; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 5px; }
-  input {
-    width: 100%; padding: 12px 14px; font-size: 1rem; color: var(--text);
-    background: var(--input); border: 1px solid var(--border); border-radius: 12px;
-    outline: none; transition: border-color .2s, box-shadow .2s;
-  }
-  input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent); }
-  .result {
-    margin-top: 12px; padding: 14px 16px; border-radius: 14px;
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
-  }
-  .result small { color: var(--muted); font-size: 0.85rem; }
-  .result b { font-size: 1.6rem; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .result b.pop { animation: pop .3s ease; }
-  .hint { margin-top: 16px; font-size: 0.75rem; color: var(--muted); }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes feed { from { transform: translateX(-14px); } to { transform: translateX(14px); } }
-  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: none; } }
-  @keyframes pop { 50% { transform: scale(1.12); } }
+:root{--bg:#0b0f17;--card:#141a26;--tx:#e8edf5;--mu:#8d97a8;--ln:#273044;--sd:#0f1420;--ac:#3b82f6}
+[data-theme=light]{--bg:#eef2f7;--card:#fff;--tx:#18202e;--mu:#667085;--ln:#dfe5ee;--sd:#fff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;transition:background .4s,color .4s}
+.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--sd);border-bottom:1px solid var(--ln)}
+.ib{background:none;border:1px solid var(--ln);color:var(--tx);border-radius:10px;font-size:1.3rem;width:42px;height:42px;cursor:pointer}
+h1{font-size:1.25rem;font-weight:800}h1 span{color:var(--ac)}
+.side{position:fixed;top:0;bottom:0;left:0;width:250px;z-index:30;background:var(--sd);border-right:1px solid var(--ln);padding:76px 12px 12px;display:flex;flex-direction:column;gap:6px;transform:translateX(-100%);transition:transform .35s}
+body.open .side{transform:none}
+.item{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:none;color:var(--tx);font-size:1rem;cursor:pointer;text-align:left;transition:background .2s}
+.item:hover,.item.on{background:color-mix(in srgb,var(--c,var(--ac)) 18%,transparent)}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.sp{flex:1}
+.set{display:none;padding:8px 14px;flex-direction:column;gap:10px;font-size:.9rem}.set.on{display:flex}
+.set label{display:flex;align-items:center;gap:10px;color:var(--tx);font-size:.9rem;margin:0}
+main{padding:20px 16px;transition:margin .35s}
+@media(min-width:900px){body.open main{margin-left:250px}}
+.wrap{max-width:720px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:22px;padding:22px;animation:up .5s ease both}
+.card h2{color:var(--ac);font-size:1.6rem}
+.stage{display:flex;justify-content:center;margin:8px 0 14px}.stage svg{height:150px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{display:block;font-size:.8rem;color:var(--mu);margin-bottom:5px}
+input[type=number],input[type=text]{width:100%;padding:12px;font-size:1rem;color:var(--tx);background:var(--bg);border:1px solid var(--ln);border-radius:12px;outline:none}
+input[type=number]:focus,input[type=text]:focus{border-color:var(--ac);box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 25%,transparent)}
+.res{margin-top:12px;padding:14px 16px;border-radius:14px;background:color-mix(in srgb,var(--ac) 12%,transparent);border:1px solid color-mix(in srgb,var(--ac) 35%,transparent);display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.res small{color:var(--mu)}.res b{font-size:1.4rem;color:var(--ac)}
+.hint{margin-top:14px;font-size:.78rem;color:var(--mu);line-height:1.5}
+.intro{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.intro.show{opacity:1}.intro svg{width:min(60vw,240px);height:auto;animation:pop .6s ease both}.intro h2{margin-top:14px;font-size:2rem;color:var(--ac)}
+.fl{animation:fl .7s linear infinite}.ro{animation:ro .6s linear infinite}.fd{animation:fd 2s ease-in-out infinite alternate}
+.pu{transform-box:fill-box;transform-origin:center;animation:pu 2s ease-in-out infinite alternate}
+body.noanim *{animation:none!important;transition:none!important}
+@keyframes fl{to{transform:translateY(22px)}}@keyframes ro{to{transform:translateY(20px)}}
+@keyframes fd{to{transform:translateX(-40px)}}@keyframes pu{to{transform:scale(.93)}}
+@keyframes up{from{opacity:0;transform:translateY(20px)}}@keyframes pop{from{opacity:0;transform:scale(.6)}}
 </style>
 </head>
 <body>
-
-<header>
-  <h1><span>Zerspanungs</span>rechner</h1>
-  <button class="toggle" id="themeBtn">☀️ Hell</button>
-</header>
-
-<div class="grid">
-
-  <!-- FRÄSEN -->
-  <section class="card fraesen">
-    <h2>Fräsen</h2>
-    <div class="stage">
-      <svg viewBox="0 0 300 170">
-        <rect x="20" y="130" width="260" height="28" rx="6" fill="currentColor" opacity="0.25"/>
-        <g class="feed">
-          <g class="spin" id="fCutter">
-            <circle cx="150" cy="82" r="38" fill="none" stroke="#3b82f6" stroke-width="4"/>
-            <line x1="150" y1="44" x2="150" y2="120" stroke="#3b82f6" stroke-width="4"/>
-            <line x1="112" y1="82" x2="188" y2="82" stroke="#3b82f6" stroke-width="4"/>
-            <circle cx="150" cy="82" r="6" fill="#3b82f6"/>
-          </g>
-        </g>
-        <text class="chip" x="150" y="24" text-anchor="middle" font-size="13" fill="#3b82f6">Ø d · n · vf</text>
-      </svg>
-    </div>
-
-    <h3>Drehzahl</h3>
-    <div class="row">
-      <div><label>Durchmesser d (mm)</label><input type="number" id="fD" value="10" step="any" inputmode="decimal"></div>
-      <div><label>Schnittgeschw. vc (m/min)</label><input type="number" id="fVc" value="100" step="any" inputmode="decimal"></div>
-    </div>
-    <div class="result"><small>Drehzahl n</small><b id="fN">–</b></div>
-
-    <h3>Vorschubgeschwindigkeit</h3>
-    <div class="row">
-      <div><label>Zähnezahl z</label><input type="number" id="fZ" value="4" step="1" inputmode="numeric"></div>
-      <div><label>Vorschub je Zahn fz (mm)</label><input type="number" id="fFz" value="0.05" step="any" inputmode="decimal"></div>
-    </div>
-    <div class="result"><small>Vorschub vf</small><b id="fVf">–</b></div>
-
-    <h3>Schnittgeschwindigkeit</h3>
-    <div class="row">
-      <div><label>Durchmesser d (mm)</label><input type="number" id="fD2" value="10" step="any" inputmode="decimal"></div>
-      <div><label>Drehzahl n (1/min)</label><input type="number" id="fN2" value="3000" step="any" inputmode="decimal"></div>
-    </div>
-    <div class="result"><small>Schnittgeschw. vc</small><b id="fVc2">–</b></div>
-    <p class="hint">n = vc·1000 / (π·d) · vf = n·fz·z · vc = π·d·n / 1000</p>
-  </section>
-
-  <!-- DREHEN -->
-  <section class="card drehen">
-    <h2>Drehen</h2>
-    <div class="stage">
-      <svg viewBox="0 0 300 170">
-        <g class="spin-slow" id="dPart">
-          <circle cx="110" cy="90" r="48" fill="currentColor" opacity="0.2" stroke="#f59e0b" stroke-width="4"/>
-          <circle cx="110" cy="90" r="8" fill="#f59e0b"/>
-          <line x1="110" y1="90" x2="110" y2="48" stroke="#f59e0b" stroke-width="3"/>
-        </g>
-        <g class="feed">
-          <polygon points="230,90 185,78 185,102" fill="#f59e0b"/>
-          <rect x="230" y="78" width="50" height="24" rx="4" fill="#f59e0b" opacity="0.6"/>
-        </g>
-        <text class="chip" x="150" y="24" text-anchor="middle" font-size="13" fill="#f59e0b">Ø d · n · f</text>
-      </svg>
-    </div>
-
-    <h3>Drehzahl</h3>
-    <div class="row">
-      <div><label>Durchmesser d (mm)</label><input type="number" id="dD" value="40" step="any" inputmode="decimal"></div>
-      <div><label>Schnittgeschw. vc (m/min)</label><input type="number" id="dVc" value="200" step="any" inputmode="decimal"></div>
-    </div>
-    <div class="result"><small>Drehzahl n</small><b id="dN">–</b></div>
-
-    <h3>Vorschubgeschwindigkeit</h3>
-    <div class="row">
-      <div><label>Vorschub je U. f (mm)</label><input type="number" id="dF" value="0.2" step="any" inputmode="decimal"></div>
-    </div>
-    <div class="result"><small>Vorschub vf</small><b id="dVf">–</b></div>
-
-    <h3>Schnittgeschwindigkeit</h3>
-    <div class="row">
-      <div><label>Durchmesser d (mm)</label><input type="number" id="dD2" value="40" step="any" inputmode="decimal"></div>
-      <div><label>Drehzahl n (1/min)</label><input type="number" id="dN2" value="1500" step="any" inputmode="decimal"></div>
-    </div>
-    <div class="result"><small>Schnittgeschw. vc</small><b id="dVc2">–</b></div>
-    <p class="hint">n = vc·1000 / (π·d) · vf = n·f · vc = π·d·n / 1000</p>
-  </section>
-
-</div>
+<div class='top'><button class='ib' id='menuBtn' aria-label='Menü'>☰</button><h1>Zerspanungs<span>rechner</span></h1></div>
+<nav class='side'>
+<div id='nav'></div><div class='sp'></div>
+<div class='set' id='set'><label><input type='checkbox' id='thm'> Helles Design</label><label><input type='checkbox' id='ani' checked> Animationen</label></div>
+<button class='item' id='setBtn'>⚙ Einstellungen</button>
+</nav>
+<main><div class='wrap' id='view'></div></main>
+<div class='intro' id='intro'></div>
 
 <script>
-  const $ = id => document.getElementById(id);
-  const num = id => parseFloat($(id).value) || 0;
-  const fmt = (x, d, unit) => isFinite(x) && x > 0 ? x.toLocaleString("de-DE", {maximumFractionDigits: d}) + " " + unit : "–";
+const $=i=>document.getElementById(i),PI=Math.PI;
+const MENU=[['fraesen','Fräsen','#3b82f6'],['bohren','Bohren','#10b981'],['drehen','Drehen','#f59e0b'],['passung','Passungen','#a855f7']];
 
-  function show(id, text) {
-    const el = $(id);
-    if (el.textContent !== text) {
-      el.textContent = text;
-      el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
-    }
+/* ---------- Werkzeug-Grafiken (Streifen wandern = Drehung) ---------- */
+function tool(k){
+  const G="<defs><linearGradient id='gh' x1='0' x2='1' y1='0' y2='0'><stop offset='0' stop-color='#5b6472'/><stop offset='.35' stop-color='#f1f5f9'/><stop offset='.7' stop-color='#9aa4b2'/><stop offset='1' stop-color='#475060'/></linearGradient><linearGradient id='gv' x1='0' x2='0' y1='0' y2='1'><stop offset='0' stop-color='#5b6472'/><stop offset='.4' stop-color='#f1f5f9'/><stop offset='1' stop-color='#475060'/></linearGradient><clipPath id='c1'><path d='M65 110H135V222Q100 240 65 222Z'/></clipPath><clipPath id='c2'><path d='M65 110H135V190L100 240L65 190Z'/></clipPath><clipPath id='c3'><rect x='20' y='60' width='170' height='90' rx='6'/></clipPath></defs>";
+  const L=d=>{let s='';for(let i=-2;i<7;i++)s+="<path d='M60 "+(110+i*22)+"L140 "+(110+i*22+d)+"' stroke='#0f172a' stroke-width='9' opacity='.45'/>";return s};
+  if(k=='fraesen')return "<svg viewBox='0 0 200 250'>"+G+"<rect x='75' y='10' width='50' height='102' fill='url(#gh)'/><g clip-path='url(#c1)'><rect x='60' y='108' width='80' height='140' fill='url(#gh)'/><g class='fl'>"+L(26)+"</g></g></svg>";
+  if(k=='bohren')return "<svg viewBox='0 0 200 250'>"+G+"<rect x='80' y='10' width='40' height='102' fill='url(#gh)'/><g clip-path='url(#c2)'><rect x='60' y='108' width='80' height='140' fill='url(#gh)'/><g class='fl'>"+L(34)+"</g></g></svg>";
+  if(k=='drehen'){let r='';for(let i=-2;i<6;i++)r+="<path d='M20 "+(70+i*20)+"H190' stroke='#0f172a' stroke-width='6' opacity='.35'/>";
+    return "<svg viewBox='0 0 240 190'>"+G+"<rect x='20' y='60' width='170' height='90' rx='6' fill='url(#gv)'/><g clip-path='url(#c3)'><g class='ro'>"+r+"</g></g><g class='fd'><polygon points='150,60 130,24 170,24' fill='#f59e0b'/><rect x='130' y='6' width='60' height='18' rx='4' fill='#6b7280'/></g></svg>";}
+  return "<svg viewBox='0 0 200 200'><circle cx='100' cy='100' r='84' fill='none' style='stroke:var(--ac)' stroke-width='14' opacity='.5'/><g class='pu'><circle cx='100' cy='100' r='66' fill='url(#gh)'/></g><defs><linearGradient id='gh' x1='0' x2='1'><stop offset='0' stop-color='#5b6472'/><stop offset='.4' stop-color='#f1f5f9'/><stop offset='1' stop-color='#475060'/></linearGradient></defs><text x='100' y='108' text-anchor='middle' font-size='26' font-weight='800' fill='#0f172a'>H7 / g6</text></svg>";
+}
+
+/* ---------- Rechner: Fräsen, Bohren, Drehen ---------- */
+const fmt=(x,d)=>isFinite(x)&&x>0?x.toLocaleString('de-DE',{maximumFractionDigits:d}):'–';
+const VCN=['Schnittgeschwindigkeit aus Drehzahl',v=>PI*v.d*v.ni/1000,1,'m/min'];
+const CFG={
+ fraesen:{inp:[['d','Fräserdurchmesser d (mm)',10],['vc','Schnittgeschwindigkeit vc (m/min)',100],['z','Zähnezahl z',4],['fz','Vorschub je Zahn fz (mm)',0.05],['ni','Drehzahl n für vc-Berechnung (1/min)',3000]],
+  out:[['Drehzahl n',v=>v.vc*1000/(PI*v.d),0,'1/min'],['Vorschubgeschwindigkeit vf',v=>v.vc*1000/(PI*v.d)*v.fz*v.z,0,'mm/min'],VCN],
+  f:'n = vc·1000 / (π·d) · vf = n·fz·z · vc = π·d·n / 1000'},
+ bohren:{inp:[['d','Bohrerdurchmesser d (mm)',8],['vc','Schnittgeschwindigkeit vc (m/min)',30],['f','Vorschub je Umdrehung f (mm)',0.15],['t','Bohrtiefe (mm)',20],['ni','Drehzahl n für vc-Berechnung (1/min)',1200]],
+  out:[['Drehzahl n',v=>v.vc*1000/(PI*v.d),0,'1/min'],['Vorschubgeschwindigkeit vf',v=>v.vc*1000/(PI*v.d)*v.f,0,'mm/min'],['Bohrzeit',v=>v.t/(v.vc*1000/(PI*v.d)*v.f)*60,1,'s'],VCN],
+  f:'n = vc·1000 / (π·d) · vf = n·f · Bohrzeit = Tiefe / vf (ohne Anbohr- und Auslaufweg)'},
+ drehen:{inp:[['d','Werkstückdurchmesser d (mm)',40],['vc','Schnittgeschwindigkeit vc (m/min)',200],['f','Vorschub je Umdrehung f (mm)',0.2],['ni','Drehzahl n für vc-Berechnung (1/min)',1500]],
+  out:[['Drehzahl n',v=>v.vc*1000/(PI*v.d),0,'1/min'],['Vorschubgeschwindigkeit vf',v=>v.vc*1000/(PI*v.d)*v.f,0,'mm/min'],VCN],
+  f:'n = vc·1000 / (π·d) · vf = n·f · vc = π·d·n / 1000'}
+};
+function calcView(k){
+  const c=CFG[k],v={};
+  c.inp.forEach(i=>v[i[0]]=parseFloat($(k+i[0]).value)||0);
+  c.out.forEach((o,j)=>{$(k+'o'+j).textContent=fmt(o[1](v),o[2])+' '+o[3]});
+}
+
+/* ---------- Passungen (ISO 286, Nennmaß 1 bis 400 mm) ---------- */
+const B=[3,6,10,18,30,50,80,120,180,250,315,400];
+const IT={5:[4,5,6,8,9,11,13,15,18,20,23,25],6:[6,8,9,11,13,16,19,22,25,29,32,36],7:[10,12,15,18,21,25,30,35,40,46,52,57],8:[14,18,22,27,33,39,46,54,63,72,81,89],9:[25,30,36,43,52,62,74,87,100,115,130,140]};
+const GV=[2,4,5,6,7,9,10,12,14,15,17,18],FV=[6,10,13,16,20,25,30,36,43,50,56,62];
+const LW={k:[0,1,1,1,2,2,2,3,3,4,4,4],m:[2,4,6,7,8,9,11,13,15,17,20,21],n:[4,8,10,12,15,17,20,23,27,31,34,37],p:[6,12,15,18,22,26,32,37,43,50,56,62]};
+const KH={6:[0,2,2,2,2,3,4,4,4,5,5,7],7:[0,3,5,6,6,7,9,10,12,13,16,17]};
+const PH={6:[-6,-9,-12,-15,-18,-21,-26,-30,-36,-41,-47,-51],7:[-6,-8,-9,-11,-14,-17,-21,-24,-28,-33,-36,-41]};
+function lim(L,g,s){
+  const i=B.findIndex(x=>s<=x);if(i<0||!IT[g])return null;
+  const t=IT[g][i],hole=L==L.toUpperCase(),l=L.toLowerCase();let lo,hi;
+  if(hole){
+    if(L=='H')lo=0;else if(L=='G')lo=GV[i];else if(L=='F')lo=FV[i];
+    else if(L=='K'&&KH[g])hi=KH[g][i];else if(L=='P'&&PH[g])hi=PH[g][i];else return null;
+    if(lo!==undefined)hi=lo+t;else lo=hi-t;
+  }else{
+    if(l=='h')hi=0;else if(l=='g')hi=-GV[i];else if(l=='f')hi=-FV[i];
+    else if(LW[l]&&!(l=='k'&&g>7))lo=LW[l][i];else return null;
+    if(lo===undefined)lo=hi-t;else hi=lo+t;
   }
-
-  function calc() {
-    // Fräsen
-    const fn = num("fVc") * 1000 / (Math.PI * num("fD"));
-    show("fN", fmt(fn, 0, "1/min"));
-    show("fVf", fmt(fn * num("fFz") * num("fZ"), 0, "mm/min"));
-    show("fVc2", fmt(Math.PI * num("fD2") * num("fN2") / 1000, 1, "m/min"));
-    // Drehen
-    const dn = num("dVc") * 1000 / (Math.PI * num("dD"));
-    show("dN", fmt(dn, 0, "1/min"));
-    show("dVf", fmt(dn * num("dF"), 0, "mm/min"));
-    show("dVc2", fmt(Math.PI * num("dD2") * num("dN2") / 1000, 1, "m/min"));
-    // Animation: Drehgeschwindigkeit folgt der Drehzahl
-    const speed = (n) => n > 0 ? Math.max(0.15, Math.min(3, 6000 / n / 3)) + "s" : "0s";
-    $("fCutter").style.animationDuration = speed(fn);
-    $("dPart").style.animationDuration = speed(dn);
+  return{lo,hi,t,hole,name:L+g};
+}
+const mm=(s,u)=>(s+u/1000).toLocaleString('de-DE',{minimumFractionDigits:3,maximumFractionDigits:3});
+const sg=u=>(u>0?'+':'')+u;
+function passung(){
+  const m=/^ *([0-9]+[.,]?[0-9]*) *([A-Za-z])([0-9]{1,2}) *(\/ *([A-Za-z])([0-9]{1,2}))? *$/.exec($('pc').value);
+  const out=$('po');
+  if(!m){out.innerHTML="<p class='hint'>Bitte so eingeben: 5H7 oder 50 H7/g6</p>";return}
+  const s=parseFloat(m[1].replace(',','.'));
+  if(!(s>0&&s<=400)){out.innerHTML="<p class='hint'>Das Nennmaß muss zwischen 0 und 400 mm liegen.</p>";return}
+  const codes=[[m[2],+m[3]]];if(m[4])codes.push([m[5],+m[6]]);
+  let h='';const parts=[];
+  codes.forEach(c=>{
+    const r=lim(c[0],c[1],s);
+    if(!r){h+="<p class='hint'>"+c[0]+c[1]+" ist hier noch nicht hinterlegt. Möglich: Bohrung F, G, H (IT5–9), K, P (IT6–7); Welle f, g, h, m, n, p (IT5–9), k (IT5–7).</p>";return}
+    parts.push(r);
+    h+="<div class='res'><small>"+(r.hole?'Bohrung ':'Welle ')+r.name+" · Abmaße "+sg(r.hi)+" / "+sg(r.lo)+" µm · Toleranz "+r.t+" µm</small><b>"+mm(s,r.lo)+" bis "+mm(s,r.hi)+" mm</b></div>";
+  });
+  const H=parts.find(p=>p.hole),W=parts.find(p=>!p.hole);
+  if(H&&W){
+    const mx=H.hi-W.lo,mn=H.lo-W.hi;
+    h+="<div class='res'><small>Passungsart</small><b>"+(mn>=0?'Spielpassung':mx<=0?'Presspassung':'Übergangspassung')+"</b></div>";
+    h+="<div class='res'><small>Spiel (min / max)</small><b>"+sg(mn)+" / "+sg(mx)+" µm</b></div>";
   }
+  out.innerHTML=h;
+}
 
-  document.querySelectorAll("input").forEach(i => i.addEventListener("input", calc));
-
-  // Hell/Dunkel
-  const root = document.documentElement, btn = $("themeBtn");
-  function setTheme(t) {
-    root.setAttribute("data-theme", t);
-    btn.textContent = t === "dark" ? "☀️ Hell" : "🌙 Dunkel";
+/* ---------- Ansicht aufbauen ---------- */
+function build(k){
+  const name=MENU.find(x=>x[0]==k)[1];
+  let h="<div class='card'><h2>"+name+"</h2><div class='stage'>"+tool(k)+"</div>";
+  if(k=='passung'){
+    h+="<label>Maß mit Passung (Beispiel: 5H7 oder 50 H7/g6)</label><input type='text' id='pc' value='5H7'><div id='po'></div><p class='hint'>5H7 heißt: Bohrung mit 5 mm Nennmaß, Lage H (Mindestmaß = Nennmaß), Toleranzgrad IT7. Großbuchstaben = Bohrung, Kleinbuchstaben = Welle. Werte nach ISO 286, bitte bei kritischen Teilen mit dem Tabellenbuch gegenprüfen.</p></div>";
+  }else{
+    const c=CFG[k];h+="<div class='row'>";
+    c.inp.forEach(i=>h+="<div><label>"+i[1]+"</label><input type='number' step='any' inputmode='decimal' id='"+k+i[0]+"' value='"+i[2]+"'></div>");
+    h+="</div>";
+    c.out.forEach((o,j)=>h+="<div class='res'><small>"+o[0]+"</small><b id='"+k+"o"+j+"'>–</b></div>");
+    h+="<p class='hint'>"+c.f+"</p></div>";
   }
-  btn.addEventListener("click", () => setTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark"));
-  setTheme(window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  $('view').innerHTML=h;
+  if(k=='passung'){$('pc').addEventListener('input',passung);passung();}
+  else{CFG[k].inp.forEach(i=>$(k+i[0]).addEventListener('input',()=>calcView(k)));calcView(k);}
+}
 
-  calc();
+/* ---------- Menü, Intro, Einstellungen ---------- */
+let cur=null;
+function go(k){
+  const m=MENU.find(x=>x[0]==k);
+  document.body.style.setProperty('--ac',m[2]);
+  document.querySelectorAll('.item[data-k]').forEach(b=>b.classList.toggle('on',b.dataset.k==k));
+  if(innerWidth<900)document.body.classList.remove('open');
+  if($('ani').checked){
+    const it=$('intro');it.innerHTML=tool(k)+'<h2>'+m[1]+'</h2>';it.classList.add('show');
+    setTimeout(()=>{build(k);it.classList.remove('show')},1300);
+  }else build(k);
+  cur=k;
+}
+MENU.forEach(m=>{
+  const b=document.createElement('button');b.className='item';b.dataset.k=m[0];b.style.setProperty('--c',m[2]);
+  b.innerHTML="<span class='dot'></span>"+m[1];b.onclick=()=>go(m[0]);$('nav').appendChild(b);
+});
+$('menuBtn').onclick=()=>document.body.classList.toggle('open');
+$('setBtn').onclick=()=>$('set').classList.toggle('on');
+$('thm').onchange=e=>document.documentElement.setAttribute('data-theme',e.target.checked?'light':'dark');
+$('ani').onchange=e=>document.body.classList.toggle('noanim',!e.target.checked);
+if(matchMedia('(prefers-color-scheme: light)').matches){$('thm').checked=true;document.documentElement.setAttribute('data-theme','light');}
+if(innerWidth>=900)document.body.classList.add('open');
+go('fraesen');
 </script>
 </body>
 </html>
