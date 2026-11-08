@@ -1,134 +1,118 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2775.1">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zerspanungsrechner</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #eef1f5; margin: 0; padding: 20px; color: #222; }
+  h1 { text-align: center; margin-bottom: 20px; }
+  .container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .card h2 { margin-top: 0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; color: #1565c0; }
+  .card.drehen h2 { border-color: #ef6c00; color: #ef6c00; }
+  .card h3 { margin: 18px 0 8px; font-size: 1em; color: #555; }
+  label { display: block; margin: 10px 0 4px; font-size: 0.9em; }
+  input { width: 100%; padding: 8px; font-size: 1em; border: 1px solid #bbb; border-radius: 6px; }
+  .result { margin-top: 12px; padding: 10px; background: #e3f2fd; border-radius: 8px; font-weight: bold; }
+  .drehen .result { background: #fff3e0; }
+  svg { width: 100%; height: 140px; margin-top: 10px; background: #fafafa; border-radius: 8px; }
+  .hint { font-size: 0.8em; color: #666; margin-top: 4px; }
+</style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="de"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
-<p class="p1">&lt;title&gt;Zerspanungsrechner&lt;/title&gt;</p>
-<p class="p1">&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>* { box-sizing: border-box; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>body { font-family: Arial, sans-serif; background: #eef1f5; margin: 0; padding: 20px; color: #222; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>h1 { text-align: center; margin-bottom: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.card h2 { margin-top: 0; border-bottom: 3px solid #1565c0; padding-bottom: 8px; color: #1565c0; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.card.drehen h2 { border-color: #ef6c00; color: #ef6c00; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.card h3 { margin: 18px 0 8px; font-size: 1em; color: #555; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>label { display: block; margin: 10px 0 4px; font-size: 0.9em; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>input { width: 100%; padding: 8px; font-size: 1em; border: 1px solid #bbb; border-radius: 6px; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.result { margin-top: 12px; padding: 10px; background: #e3f2fd; border-radius: 8px; font-weight: bold; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.drehen .result { background: #fff3e0; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>svg { width: 100%; height: 140px; margin-top: 10px; background: #fafafa; border-radius: 8px; }</p>
-<p class="p1"><span class="Apple-converted-space">  </span>.hint { font-size: 0.8em; color: #666; margin-top: 4px; }</p>
-<p class="p1">&lt;/style&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1">&lt;h1&gt;Zerspanungsrechner&lt;/h1&gt;</p>
-<p class="p1">&lt;div class="container"&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- FRÄSEN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card fraesen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Fräsen&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;svg viewBox="0 0 200 140"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;rect x="20" y="100" width="160" height="25" fill="#b0bec5"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;circle id="fCircle" cx="100" cy="65" r="35" fill="none" stroke="#1565c0" stroke-width="3"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;line x1="100" y1="65" x2="135" y2="65" stroke="#1565c0" stroke-width="2"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;line x1="65" y1="65" x2="135" y2="65" stroke="#1565c0" stroke-dasharray="4"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;text x="100" y="20" text-anchor="middle" font-size="12" fill="#1565c0"&gt;Fräser Ø d&lt;/text&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;text x="100" y="85" text-anchor="middle" font-size="11"&gt;n&lt;/text&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/svg&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Drehzahl aus Schnittgeschwindigkeit&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Fräserdurchmesser d (mm)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="fD" value="10" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Schnittgeschwindigkeit vc (m/min)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="fVc" value="100" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="result" id="fN"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Vorschubgeschwindigkeit&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Zähnezahl z&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="fZ" value="4" step="1"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Vorschub pro Zahn fz (mm)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="fFz" value="0.05" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="result" id="fVf"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Schnittgeschwindigkeit aus Drehzahl&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Drehzahl n (1/min)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="fN2" value="3000" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="result" id="fVc2"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="hint"&gt;Formeln: n = vc·1000 / (π·d), vf = n·fz·z, vc = π·d·n / 1000&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- DREHEN --&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="card drehen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Drehen&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;svg viewBox="0 0 200 140"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;rect x="30" y="40" width="120" height="60" fill="#cfd8dc" stroke="#ef6c00" stroke-width="3"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;line x1="20" y1="70" x2="160" y2="70" stroke="#555" stroke-dasharray="6 3"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;path d="M170 30 L150 40 L170 50 Z" fill="#ef6c00"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;text x="90" y="125" text-anchor="middle" font-size="12" fill="#ef6c00"&gt;Werkstück Ø d&lt;/text&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;path d="M60 20 A15 15 0 1 1 90 20" fill="none" stroke="#555" stroke-width="2"/&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;text x="75" y="15" text-anchor="middle" font-size="11"&gt;n&lt;/text&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/svg&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Drehzahl aus Schnittgeschwindigkeit&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Werkstückdurchmesser d (mm)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="dD" value="40" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Schnittgeschwindigkeit vc (m/min)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="dVc" value="200" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="result" id="dN"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Vorschubgeschwindigkeit&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Vorschub pro Umdrehung f (mm/U)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="dF" value="0.2" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="result" id="dVf"&gt;&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h3&gt;Schnittgeschwindigkeit aus Drehzahl&lt;/h3&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;label&gt;Drehzahl n (1/min)&lt;/label&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="number" id="dN2" value="1500" step="any"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="result" id="dVc2"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;p class="hint"&gt;Formeln: n = vc·1000 / (π·d), vf = n·f, vc = π·d·n / 1000&lt;/p&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1">&lt;script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const v = id =&gt; parseFloat(document.getElementById(id).value) || 0;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const set = (id, text) =&gt; document.getElementById(id).textContent = text;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>const r = (x, n = 1) =&gt; (isFinite(x) ? x.toFixed(n) : "–");</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>function rechne() {</p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Fräsen</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const fn = (v("fVc") * 1000) / (Math.PI * v("fD"));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>set("fN", "Drehzahl n = " + r(fn, 0) + " 1/min");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>set("fVf", "Vorschub vf = " + r(fn * v("fFz") * v("fZ"), 0) + " mm/min");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>set("fVc2", "Schnittgeschwindigkeit vc = " + r(Math.PI * v("fD") * v("fN2") / 1000, 1) + " m/min");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("fCircle").setAttribute("r", Math.max(10, Math.min(50, v("fD") * 2.5)));</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">    </span>// Drehen</p>
-<p class="p1"><span class="Apple-converted-space">    </span>const dn = (v("dVc") * 1000) / (Math.PI * v("dD"));</p>
-<p class="p1"><span class="Apple-converted-space">    </span>set("dN", "Drehzahl n = " + r(dn, 0) + " 1/min");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>set("dVf", "Vorschub vf = " + r(dn * v("dF"), 0) + " mm/min");</p>
-<p class="p1"><span class="Apple-converted-space">    </span>set("dVc2", "Schnittgeschwindigkeit vc = " + r(Math.PI * v("dD") * v("dN2") / 1000, 1) + " m/min");</p>
-<p class="p1"><span class="Apple-converted-space">  </span>}</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>document.querySelectorAll("input").forEach(i =&gt; i.addEventListener("input", rechne));</p>
-<p class="p1"><span class="Apple-converted-space">  </span>rechne();</p>
-<p class="p1">&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+<h1>Zerspanungsrechner</h1>
+<div class="container">
+
+  <!-- FRÄSEN -->
+  <div class="card fraesen">
+    <h2>Fräsen</h2>
+    <svg viewBox="0 0 200 140">
+      <rect x="20" y="100" width="160" height="25" fill="#b0bec5"/>
+      <circle id="fCircle" cx="100" cy="65" r="35" fill="none" stroke="#1565c0" stroke-width="3"/>
+      <line x1="100" y1="65" x2="135" y2="65" stroke="#1565c0" stroke-width="2"/>
+      <line x1="65" y1="65" x2="135" y2="65" stroke="#1565c0" stroke-dasharray="4"/>
+      <text x="100" y="20" text-anchor="middle" font-size="12" fill="#1565c0">Fräser Ø d</text>
+      <text x="100" y="85" text-anchor="middle" font-size="11">n</text>
+    </svg>
+
+    <h3>Drehzahl aus Schnittgeschwindigkeit</h3>
+    <label>Fräserdurchmesser d (mm)</label>
+    <input type="number" id="fD" value="10" step="any">
+    <label>Schnittgeschwindigkeit vc (m/min)</label>
+    <input type="number" id="fVc" value="100" step="any">
+    <div class="result" id="fN"></div>
+
+    <h3>Vorschubgeschwindigkeit</h3>
+    <label>Zähnezahl z</label>
+    <input type="number" id="fZ" value="4" step="1">
+    <label>Vorschub pro Zahn fz (mm)</label>
+    <input type="number" id="fFz" value="0.05" step="any">
+    <div class="result" id="fVf"></div>
+
+    <h3>Schnittgeschwindigkeit aus Drehzahl</h3>
+    <label>Drehzahl n (1/min)</label>
+    <input type="number" id="fN2" value="3000" step="any">
+    <div class="result" id="fVc2"></div>
+    <p class="hint">Formeln: n = vc·1000 / (π·d), vf = n·fz·z, vc = π·d·n / 1000</p>
+  </div>
+
+  <!-- DREHEN -->
+  <div class="card drehen">
+    <h2>Drehen</h2>
+    <svg viewBox="0 0 200 140">
+      <rect x="30" y="40" width="120" height="60" fill="#cfd8dc" stroke="#ef6c00" stroke-width="3"/>
+      <line x1="20" y1="70" x2="160" y2="70" stroke="#555" stroke-dasharray="6 3"/>
+      <path d="M170 30 L150 40 L170 50 Z" fill="#ef6c00"/>
+      <text x="90" y="125" text-anchor="middle" font-size="12" fill="#ef6c00">Werkstück Ø d</text>
+      <path d="M60 20 A15 15 0 1 1 90 20" fill="none" stroke="#555" stroke-width="2"/>
+      <text x="75" y="15" text-anchor="middle" font-size="11">n</text>
+    </svg>
+
+    <h3>Drehzahl aus Schnittgeschwindigkeit</h3>
+    <label>Werkstückdurchmesser d (mm)</label>
+    <input type="number" id="dD" value="40" step="any">
+    <label>Schnittgeschwindigkeit vc (m/min)</label>
+    <input type="number" id="dVc" value="200" step="any">
+    <div class="result" id="dN"></div>
+
+    <h3>Vorschubgeschwindigkeit</h3>
+    <label>Vorschub pro Umdrehung f (mm/U)</label>
+    <input type="number" id="dF" value="0.2" step="any">
+    <div class="result" id="dVf"></div>
+
+    <h3>Schnittgeschwindigkeit aus Drehzahl</h3>
+    <label>Drehzahl n (1/min)</label>
+    <input type="number" id="dN2" value="1500" step="any">
+    <div class="result" id="dVc2"></div>
+    <p class="hint">Formeln: n = vc·1000 / (π·d), vf = n·f, vc = π·d·n / 1000</p>
+  </div>
+
+</div>
+
+<script>
+  const v = id => parseFloat(document.getElementById(id).value) || 0;
+  const set = (id, text) => document.getElementById(id).textContent = text;
+  const r = (x, n = 1) => (isFinite(x) ? x.toFixed(n) : "–");
+
+  function rechne() {
+    // Fräsen
+    const fn = (v("fVc") * 1000) / (Math.PI * v("fD"));
+    set("fN", "Drehzahl n = " + r(fn, 0) + " 1/min");
+    set("fVf", "Vorschub vf = " + r(fn * v("fFz") * v("fZ"), 0) + " mm/min");
+    set("fVc2", "Schnittgeschwindigkeit vc = " + r(Math.PI * v("fD") * v("fN2") / 1000, 1) + " m/min");
+    document.getElementById("fCircle").setAttribute("r", Math.max(10, Math.min(50, v("fD") * 2.5)));
+
+    // Drehen
+    const dn = (v("dVc") * 1000) / (Math.PI * v("dD"));
+    set("dN", "Drehzahl n = " + r(dn, 0) + " 1/min");
+    set("dVf", "Vorschub vf = " + r(dn * v("dF"), 0) + " mm/min");
+    set("dVc2", "Schnittgeschwindigkeit vc = " + r(Math.PI * v("dD") * v("dN2") / 1000, 1) + " m/min");
+  }
+
+  document.querySelectorAll("input").forEach(i => i.addEventListener("input", rechne));
+  rechne();
+</script>
 </body>
 </html>
