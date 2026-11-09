@@ -43,7 +43,7 @@ body[data-mode="light"]{
 body.no-glow{--glow:transparent;--glow-2:transparent;--orb:0}
 
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;transition:background .4s ease, color .4s ease}
+body{margin:0;min-height:100vh;overflow-x:clip;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;transition:background .4s ease, color .4s ease}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
@@ -84,55 +84,142 @@ main{flex:1;display:flex;flex-direction:column;min-width:0}
 .view{flex:1;padding-block:6px 28px}
 .view.enter{animation:viewIn .45s var(--ease)}
 
-/* ---------- Startseite ---------- */
-.home{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;max-width:1240px;width:100%;margin:0 auto}
-.hero{position:relative;overflow:hidden;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px;padding:40px 20px;min-height:500px;border:1px solid var(--line);background:radial-gradient(120% 90% at 50% 0%, color-mix(in srgb,var(--surface) 70%,transparent), transparent), var(--surface)}
-.hero > *{position:relative;z-index:1}
+/* ---------- Startseite: Bedienpult ---------- */
+.home{max-width:1180px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.intro{text-align:center;padding-top:4px}
+.greet{font:600 14px var(--body);color:var(--muted);margin:0;letter-spacing:.02em}
+.intro h1{font:800 clamp(26px,4vw,40px)/1.12 var(--display);letter-spacing:-.03em;margin:6px 0 0;text-wrap:balance}
+.intro h1 em{font-style:normal;color:var(--accent-text);text-shadow:0 0 22px var(--glow)}
+.intro .sub{color:var(--muted);margin:8px auto 0;max-width:560px}
 .orb{position:absolute !important;z-index:0 !important;border-radius:50%;filter:blur(60px);opacity:var(--orb);pointer-events:none}
 .orb.a{width:340px;height:340px;background:var(--accent);top:-80px;left:-60px;animation:drift 14s ease-in-out infinite alternate}
 .orb.b{width:300px;height:300px;background:var(--accent-2);bottom:-90px;right:-50px;animation:drift 17s ease-in-out infinite alternate-reverse}
 .grid-bg{position:absolute !important;inset:0;z-index:0 !important;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 70%);mask-image:radial-gradient(circle at 50% 50%,#000,transparent 70%);opacity:.5}
-.greet{font:600 14px var(--body);color:var(--muted);margin:0;letter-spacing:.02em}
-.hero h1{font:800 clamp(28px,4.4vw,44px)/1.12 var(--display);letter-spacing:-.03em;margin:6px 0 0;text-wrap:balance}
-.hero h1 em{font-style:normal;color:var(--accent-text);text-shadow:0 0 22px var(--glow)}
-.go{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;width:200px;height:200px;border-radius:50%;color:var(--accent-ink);
-  background:radial-gradient(circle at 30% 25%, color-mix(in srgb,var(--accent) 70%,#fff), var(--accent) 55%, color-mix(in srgb,var(--accent) 65%,#000));
-  box-shadow:0 0 40px var(--glow), 0 0 100px var(--glow-2), inset 0 2px 20px rgba(255,255,255,.25);
-  animation:pulse 3.2s ease-in-out infinite;transition:transform .25s var(--ease)}
-.go::before{content:"";position:absolute;inset:-14px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),transparent 45%,var(--accent-2),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));animation:spin 5s linear infinite;filter:drop-shadow(0 0 6px var(--glow))}
-.go::after{content:"";position:absolute;inset:-30px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--accent-2) 50%,transparent);animation:spin 22s linear infinite reverse}
-.go:hover{transform:scale(1.05)}
-.go:active{transform:scale(.97)}
-.go .cutter{width:96px;height:96px;animation:spin 1.4s linear infinite;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
-.go:hover .cutter{animation-duration:.45s}
-.go b{font:800 18px var(--display);letter-spacing:-.01em}
-.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:620px}
-.chip{--cc-text:var(--cc);display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface-2) 80%,transparent);padding:6px 14px 6px 7px;border-radius:30px;font-size:13.5px;font-weight:650;animation:rise .45s var(--ease) both;animation-delay:calc(var(--i,0)*55ms + .15s);transition:border-color .2s, box-shadow .2s, transform .2s}
-.chip:hover{border-color:var(--cc-text);box-shadow:0 0 16px color-mix(in srgb,var(--cc) 35%,transparent);transform:translateY(-2px)}
+.cnc-wrap{position:relative;animation:rise .6s var(--ease) both}
+.cnc-wrap > .orb.a{left:-10px;top:-40px}
+.cnc-wrap > .orb.b{right:-10px;bottom:-40px;max-width:70%}
+html.zooming .cnc-wrap{z-index:30}
+.cnc{--p1:#3d434e;--p2:#272b33;--p3:#1b1e24;--p-ink:#e3e7ee;--p-mut:#8e96a4;--k1:#4d5460;--k2:#30353e;--k-sh:#13161b;--edge:#525a67;
+  position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:22px 26px;padding:44px 26px 26px;border-radius:30px;color:var(--p-ink);
+  background:linear-gradient(160deg,var(--p1),var(--p2) 45%,var(--p3));border:1px solid var(--edge);
+  box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.14),inset 0 -3px 0 rgba(0,0,0,.35),0 0 70px var(--glow);
+  transition:transform var(--zd,1.2s) cubic-bezier(.75,0,.2,1);will-change:transform}
+body[data-mode="light"] .cnc{--p1:#f2f4f7;--p2:#d9dde3;--p3:#c4c9d1;--p-ink:#1d222a;--p-mut:#5b6371;--k1:#ffffff;--k2:#dfe3e9;--k-sh:#99a0ab;--edge:#a8afba}
+.cnc::before{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);pointer-events:none}
+.screw{position:absolute;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9dde4,#6b727e 70%);box-shadow:inset 0 -1px 2px rgba(0,0,0,.5),0 1px 0 rgba(255,255,255,.15)}
+.screw::after{content:"";position:absolute;left:2px;right:2px;top:5px;height:2px;background:#3a3f48;transform:rotate(var(--r,35deg))}
+.screw.s1{top:14px;left:14px}.screw.s2{top:14px;right:14px;--r:-20deg}.screw.s3{bottom:14px;left:14px;--r:70deg}.screw.s4{bottom:14px;right:14px}
+.plate{position:absolute;top:13px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;font:800 11px var(--display);letter-spacing:.22em;color:var(--p-mut);white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.08)}
+.plate b{color:var(--p-ink);letter-spacing:.14em}
+.plate i{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok);animation:blink 1.6s ease-in-out infinite}
+.lbl-s{font:800 10.5px var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--p-mut);margin:0 0 9px;display:flex;align-items:center;gap:8px}
+.lbl-s::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--edge),transparent)}
 
-/* Bereichs-Symbole */
-.ci{--cc-text:var(--cc);width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:var(--cc-text);background:color-mix(in srgb,var(--cc) 15%,transparent);flex:none}
+/* Bildschirm */
+.bezel{background:#0b0d11;border-radius:20px;padding:14px;box-shadow:inset 0 2px 10px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.1),0 0 0 1px #000}
+.screen{position:relative;aspect-ratio:16/10;border-radius:10px;overflow:hidden;cursor:pointer;color:#cfe3ff;
+  background:radial-gradient(130% 110% at 50% 0%,color-mix(in srgb,var(--accent) 22%,#0a1220),#04060a 75%);
+  font:600 12px/1.35 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;display:flex;flex-direction:column;box-shadow:inset 0 0 40px rgba(0,0,0,.7)}
+.screen::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),radial-gradient(120% 90% at 50% 50%,transparent 60%,rgba(0,0,0,.55));pointer-events:none;z-index:5}
+.screen::before{content:"";position:absolute;left:-30%;top:0;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.06),transparent);transform:skewX(-12deg);animation:glare 7s ease-in-out infinite;pointer-events:none;z-index:6}
+.screen:focus-visible{outline:2px solid var(--accent-2);outline-offset:4px}
+.scr-top{display:flex;gap:12px;align-items:center;padding:7px 12px;background:color-mix(in srgb,var(--accent) 30%,#000);color:#fff;font-weight:800;letter-spacing:.06em;font-size:11px}
+.scr-top span:last-child{margin-left:auto;opacity:.85}
+.scr-st{display:flex;align-items:center;gap:6px}
+.scr-st i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.screen.run .scr-st i{animation:blink .5s infinite}
+.scr-main{flex:1;display:grid;grid-template-columns:1.25fr 1fr;gap:10px;padding:10px 12px;min-height:0}
+.scr-path{border:1px solid color-mix(in srgb,var(--accent-2) 30%,transparent);border-radius:6px;position:relative;overflow:hidden;background:linear-gradient(color-mix(in srgb,var(--accent-2) 8%,transparent) 1px,transparent 1px) 0 0/100% 12px,linear-gradient(90deg,color-mix(in srgb,var(--accent-2) 8%,transparent) 1px,transparent 1px) 0 0/12px 100%}
+.scr-path svg{width:100%;height:100%;display:block}
+.scr-path .tp{fill:none;stroke:var(--accent-2);stroke-width:1.6;stroke-dasharray:700;stroke-dashoffset:700;animation:tp 8s linear infinite;filter:drop-shadow(0 0 3px var(--accent-2))}
+.scr-path .tpg{fill:none;stroke:color-mix(in srgb,var(--accent-2) 22%,transparent);stroke-width:1;stroke-dasharray:3 3}
+.scr-path .wpb{fill:color-mix(in srgb,var(--accent) 12%,transparent);stroke:color-mix(in srgb,var(--accent) 60%,transparent);stroke-width:1}
+.scr-path .tool{fill:#fff;filter:drop-shadow(0 0 4px var(--accent-2)) drop-shadow(0 0 8px var(--accent-2))}
+.scr-path .cap{position:absolute;left:8px;top:6px;font-size:10px;color:color-mix(in srgb,var(--accent-2) 80%,#fff);opacity:.85}
+.scr-dro{display:flex;flex-direction:column;justify-content:center;gap:3px}
+.dro{display:flex;align-items:baseline;gap:8px;padding:2px 8px;border-radius:5px;background:rgba(255,255,255,.035)}
+.dro em{font-style:normal;font-weight:800;color:#fff;width:14px}
+.dro b{flex:1;text-align:right;font-size:clamp(13px,1.7vw,19px);color:var(--accent-2);text-shadow:0 0 10px var(--accent-2);font-variant-numeric:tabular-nums}
+.dro small{width:44px;opacity:.6;font-size:10px}
+.dro.dm b{font-size:clamp(11px,1.3vw,14px);text-shadow:none;color:var(--mc,#fff)}
+.scr-msg{padding:5px 12px;font-weight:800;letter-spacing:.05em;font-size:11px;color:#fff;background:rgba(255,255,255,.05);border-top:1px solid rgba(255,255,255,.08);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scr-msg span{animation:blink 1.2s step-end infinite}
+.scr-soft{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:4px 6px 6px}
+.scr-soft span{text-align:center;font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:3px 0;border-radius:4px;background:color-mix(in srgb,var(--accent) 22%,transparent);color:#dfe9ff}
+.scr-soft span.on{background:var(--accent);color:var(--accent-ink)}
+.scr-formeln{flex:1;padding:10px 14px;display:none;flex-direction:column;justify-content:center;gap:6px;font-size:clamp(11px,1.35vw,14px)}
+.scr-formeln b{color:var(--accent-2);text-shadow:0 0 8px var(--accent-2)}
+.screen.f .scr-main{display:none}.screen.f .scr-formeln{display:flex}
+.screen.alarm{background:radial-gradient(130% 110% at 50% 0%,#4a0d16,#0a0204 75%)}
+.screen.alarm .scr-top{background:#b3122c}
+.screen.alarm .scr-st i{background:#ff3b5c;box-shadow:0 0 8px #ff3b5c;animation:blink .4s infinite}
+.screen.alarm .scr-msg{background:#ff3b5c;color:#fff}
+.scr-boot{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 35%,#05070c),#05070c);opacity:0;pointer-events:none;transition:opacity .25s}
+.screen.boot .scr-boot{opacity:1}
+.scr-boot b{font:800 clamp(18px,3vw,30px) var(--display);letter-spacing:.12em;color:#fff;text-shadow:0 0 18px var(--accent-2)}
+.scr-boot i{width:46%;height:5px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden}
+.scr-boot i s{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 10px var(--accent-2)}
+.screen.boot .scr-boot i s{animation:load var(--zd,1.2s) cubic-bezier(.6,0,.3,1) forwards}
+.scr-boot small{font-size:10px;letter-spacing:.14em;opacity:.7}
+.softkeys{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+
+/* Tasten */
+.key{border:1px solid rgba(0,0,0,.45);border-radius:11px;background:linear-gradient(180deg,var(--k1),var(--k2));color:var(--p-ink);box-shadow:0 4px 0 var(--k-sh),inset 0 1px 0 rgba(255,255,255,.18);font:800 11px var(--display);letter-spacing:.08em;text-transform:uppercase;padding:9px 4px;transition:transform .08s, box-shadow .08s}
+.key:hover{box-shadow:0 4px 0 var(--k-sh),inset 0 1px 0 rgba(255,255,255,.18),0 0 14px var(--glow)}
+.key:active,.key.down{transform:translateY(3px);box-shadow:0 1px 0 var(--k-sh),inset 0 1px 0 rgba(255,255,255,.1)}
+.ctrl{display:flex;flex-direction:column;gap:20px;min-width:0}
+.modes4{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mkey{display:flex;align-items:center;gap:9px;padding:11px 12px;text-align:left;font-size:12px}
+.mkey .led{width:9px;height:9px;border-radius:50%;background:#1d2026;box-shadow:inset 0 1px 2px #000;flex:none;transition:background .2s, box-shadow .2s}
+.mkey svg{width:17px;height:17px;color:var(--p-mut);transition:color .2s}
+.mkey.on{transform:translateY(3px);box-shadow:0 1px 0 var(--k-sh),inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px color-mix(in srgb,var(--cc) 60%,transparent),0 0 16px color-mix(in srgb,var(--cc) 35%,transparent)}
+.mkey.on .led{background:var(--cc);box-shadow:0 0 6px var(--cc),0 0 14px var(--cc)}
+.mkey.on svg{color:var(--cc)}
+.knobs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.kn{display:flex;align-items:center;gap:12px}
+.knob{position:relative;width:86px;height:86px;flex:none;touch-action:none;cursor:ns-resize;border-radius:50%}
+.knob:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.knob svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.knob .tick{stroke:var(--p-mut);stroke-width:1.6;stroke-linecap:round}
+.knob .trk{fill:none;stroke:rgba(0,0,0,.35);stroke-width:4;stroke-linecap:round}
+.knob .arc{fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 4px var(--accent));transition:stroke-dasharray .15s}
+.kcap{position:absolute;inset:17px;border-radius:50%;background:repeating-conic-gradient(from 0deg,#2a2e35 0 6deg,#3c424b 6deg 12deg);box-shadow:0 5px 8px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.2);transform:rotate(var(--rot,0deg));transition:transform .15s var(--ease)}
+.kcap::before{content:"";position:absolute;inset:6px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7c8491,#2b2f36 75%);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.kcap i{position:absolute;left:50%;top:5px;width:3px;height:16px;margin-left:-1.5px;border-radius:2px;background:var(--accent-2);box-shadow:0 0 8px var(--accent-2)}
+.kn-l b{display:block;font:800 10.5px var(--display);letter-spacing:.16em;color:var(--p-mut)}
+.kn-l span{font:800 22px var(--display);font-variant-numeric:tabular-nums}
+.bigrow{display:flex;justify-content:space-around;align-items:flex-end;gap:10px;margin-top:2px}
+.bb{display:flex;flex-direction:column;align-items:center;gap:10px;border:0;background:none;padding:0;font:800 10.5px var(--display);letter-spacing:.16em;color:var(--p-mut)}
+.bb .cap{position:relative;display:grid;place-items:center;border-radius:50%;transition:transform .1s, box-shadow .15s}
+.bb .cap svg{width:26px;height:26px;fill:currentColor;stroke:none}
+.estop .ring{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#ffd400 58%,#c9a400 70%,#ffd400 72%);display:grid;place-items:center;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.estop .cap{width:58px;height:58px;color:#fff;background:radial-gradient(circle at 35% 28%,#ff8a99,#e3132f 50%,#8d0a1c);box-shadow:0 7px 0 #6b0814,0 9px 12px rgba(0,0,0,.45),inset 0 2px 4px rgba(255,255,255,.35);font:900 9px var(--display);letter-spacing:.04em}
+.estop.on .cap{transform:translateY(5px) scale(.96);box-shadow:0 2px 0 #6b0814,inset 0 2px 6px rgba(0,0,0,.4)}
+.hold .cap{width:62px;height:62px;color:#3a2600;background:radial-gradient(circle at 35% 28%,#ffe08a,#ffae1a 55%,#b86e00);box-shadow:0 6px 0 #7a4a00,0 0 0 5px var(--p3),0 0 0 7px var(--edge)}
+.hold:active .cap{transform:translateY(4px);box-shadow:0 2px 0 #7a4a00,0 0 0 5px var(--p3),0 0 0 7px var(--edge)}
+.start .cap{width:96px;height:96px;color:#04331b;background:radial-gradient(circle at 35% 28%,#a6ffd2,#22d47a 52%,#0a7a42);box-shadow:0 7px 0 #075b31,0 0 0 6px var(--p3),0 0 0 8px var(--edge),0 0 34px rgba(43,245,152,.55);animation:startPulse 2.2s ease-in-out infinite}
+.start .cap svg{width:34px;height:34px;margin-left:5px}
+.start:hover .cap{box-shadow:0 7px 0 #075b31,0 0 0 6px var(--p3),0 0 0 8px var(--edge),0 0 54px rgba(43,245,152,.8)}
+.start:active .cap,.start.down .cap{transform:translateY(5px);box-shadow:0 2px 0 #075b31,0 0 0 6px var(--p3),0 0 0 8px var(--edge),0 0 60px rgba(43,245,152,.9)}
+.start b{color:var(--p-ink)}
+.cnc.shake{animation:shake .4s}
+.zflash{position:fixed;inset:0;z-index:55;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.zflash.on{opacity:1}
+html.zooming,html.zooming body{overflow:hidden}
+html.zooming .top{opacity:0;transition:opacity .3s}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.fcard{--cc-text:var(--cc);text-align:left;display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:14px;box-shadow:var(--shadow);animation:rise .45s var(--ease) both;animation-delay:calc(var(--i,0)*70ms + .3s);transition:border-color .2s, box-shadow .2s, transform .2s}
+.fcard:hover{border-color:color-mix(in srgb,var(--cc) 50%,transparent);box-shadow:0 0 20px color-mix(in srgb,var(--cc) 22%,transparent);transform:translateY(-2px)}
+.fcard b{display:block;font:800 14.5px var(--display);margin-bottom:4px}
+.fcard span{display:block;color:var(--muted);font-size:12.5px;margin-top:5px}
+
+/* Bereichs-Symbole */.ci{--cc-text:var(--cc);width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:var(--cc-text);background:color-mix(in srgb,var(--cc) 15%,transparent);flex:none}
 body[data-mode="light"] .ci, body[data-mode="light"] .chip{--cc-text:color-mix(in srgb,var(--cc) 68%,#000)}
 .ci svg{width:16px;height:16px}
 .ci.lg{width:36px;height:36px;border-radius:11px}
 .ci.lg svg{width:20px;height:20px}
 
-/* Formel-Leiste */
-.news{background:var(--surface);border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;overflow:hidden;position:relative}
-.news::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent);box-shadow:0 0 14px var(--glow)}
-.news-head{padding:18px 18px 8px;display:flex;align-items:center;gap:10px}
-.news-head .live{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:blink 1.8s ease-in-out infinite}
-.news-head h2{margin:0;font:800 17px var(--display);letter-spacing:-.01em}
-.news-body{padding:0 10px 14px;display:flex;flex-direction:column;gap:4px}
-.news-day{font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:12px 8px 6px}
-.news-item{display:flex;gap:11px;align-items:flex-start;text-align:left;width:100%;border:1px solid transparent;background:none;padding:10px 8px;border-radius:13px;animation:slideIn .45s var(--ease) both;animation-delay:calc(var(--i,0)*70ms + .2s);transition:background .2s,border-color .2s, box-shadow .2s}
-.news-item:hover{background:var(--surface-2);border-color:color-mix(in srgb,var(--cc) 40%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--cc) 18%,transparent)}
-.news-item .txt{flex:1;min-width:0;font-size:14px;line-height:1.45}
-.news-item .txt b{font-weight:700}
-.news-item .t{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
 code{font:700 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent-text);background:var(--accent-soft);padding:1px 6px;border-radius:6px;border:1px dashed color-mix(in srgb,var(--accent) 50%,transparent);white-space:nowrap}
-.news-sum{margin:6px 8px 4px;padding:12px 14px;border-radius:14px;background:var(--accent-soft);font-size:13.5px;line-height:1.45}
-.news-sum b{color:var(--accent-text)}
 
 /* ---------- Rechner ---------- */
 .calc{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:20px;max-width:1240px;width:100%;margin:0 auto;align-items:start}
@@ -213,6 +300,7 @@ select.inp{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 5
 .scrim.open{opacity:1;pointer-events:auto}
 .drawer{position:fixed;top:0;right:0;bottom:0;width:min(380px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 60px rgba(0,0,0,.35), -2px 0 30px var(--glow);z-index:41;transform:translateX(105%);transition:transform .42s var(--ease);display:flex;flex-direction:column;
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer:not(.open){visibility:hidden;transition:transform .42s var(--ease),visibility 0s .42s}
 .drawer.open{transform:none}
 .drawer-head{display:flex;align-items:center;gap:12px;padding:20px 22px 12px}
 .drawer-head h2{margin:0;font:800 21px var(--display);letter-spacing:-.02em}
@@ -249,54 +337,72 @@ select.inp{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 5
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .25s var(--ease)}
 .switch[aria-checked="true"]{background:var(--accent);box-shadow:0 0 14px var(--glow)}
 .switch[aria-checked="true"]::after{transform:translateX(19px)}
+.range{padding:14px 0 4px}
+.range .rl{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.range .rl b{font-size:14.5px}
+.range .rl span{font:800 15px var(--display);color:var(--accent-text);text-shadow:0 0 12px var(--glow);font-variant-numeric:tabular-nums}
+.range input{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:8px;outline:none;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2)) 0/var(--p,40%) 100% no-repeat,var(--surface-2);box-shadow:inset 0 0 0 1px var(--line)}
+.range input::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 0 0 4px var(--accent-soft),0 0 16px var(--glow);transition:transform .15s}
+.range input::-webkit-slider-thumb:hover{transform:scale(1.12)}
+.range input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--accent);box-shadow:0 0 16px var(--glow)}
+.range input:focus-visible{outline:2px solid var(--accent);outline-offset:6px}
+.range .rs{display:flex;justify-content:space-between;align-items:center;margin-top:8px;color:var(--muted)}
+.range .rs small{font-size:12px}
+.range .rs .link{font-size:13px;padding:2px 6px;align-self:auto}
 .link{border:0;background:none;color:var(--accent-text);font-weight:700;font-size:14px;padding:6px;display:inline-flex;align-items:center;gap:6px;align-self:flex-start}
 .link:hover{text-shadow:0 0 14px var(--glow)}
 
 /* ---------- Fräser-Übergang ---------- */
 .tx{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;visibility:hidden;opacity:0}
-.tx.run{visibility:visible;animation:txFade 1.6s ease forwards;pointer-events:auto}
+.tx.run{visibility:visible;animation:txFade var(--txd,1.6s) ease forwards;pointer-events:auto}
 .tx::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .tx-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px}
 .tx-tool{position:relative;width:min(320px,82vw);aspect-ratio:240/200;display:grid;place-items:center}
 .tx-tool::before{content:"";position:absolute;inset:-20%;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 62%);filter:blur(10px);opacity:.8}
 .tx-art{position:relative;width:100%;height:100%}
 .tx-art > svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 14px 26px rgba(0,0,0,.35))}
-.tx.run .tx-art{animation:toolMove 1.6s var(--ease) forwards}
+.tx.run .tx-art{animation:toolMove var(--txd,1.6s) var(--ease) forwards}
 .spark{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px;border-radius:2px;background:var(--accent-2);box-shadow:0 0 12px var(--accent-2);opacity:0;z-index:6}
-.tx.run .spark{animation:spark 1.6s ease-out forwards}
+.tx.run .spark{animation:spark var(--txd,1.6s) ease-out forwards}
 /* gemeinsame Teile */
 .tx-art .hx{animation:hx .22s linear infinite}
 .tx-art .hxv{animation:hxv .25s linear infinite}
 .tx-art .ch{opacity:0;transform-box:fill-box}
-.tx.run .tx-art .ch{animation:txch .55s ease-out infinite;animation-delay:calc(.35s + var(--d,0s))}
+.tx.run .tx-art .ch{animation:txch .55s ease-out infinite;animation-delay:calc(var(--txd,1.6s)*.22 + var(--d,0s))}
 .tx-art .dim{stroke:var(--ink);stroke-width:1.3;fill:none}
 .tx-art .dimt{font:800 13px var(--display);fill:var(--accent-text)}
 .tx-art .dimt2{font:800 13px var(--display);fill:var(--accent-2)}
 /* Fräsen */
-.tx.run .a-mill .feed{animation:millFeed 1.6s cubic-bezier(.45,0,.3,1) forwards}
-.tx.run .a-mill .groove{animation:groove 1.6s cubic-bezier(.45,0,.3,1) forwards}
+.tx.run .a-mill .feed{animation:millFeed var(--txd,1.6s) cubic-bezier(.45,0,.3,1) forwards}
+.tx.run .a-mill .groove{animation:groove var(--txd,1.6s) cubic-bezier(.45,0,.3,1) forwards}
 .a-mill .groove{transform-box:fill-box;transform-origin:left center;transform:scaleX(0)}
 /* Bohren */
-.tx.run .a-drill .plunge{animation:drillDown 1.6s cubic-bezier(.45,0,.3,1) forwards}
-.tx.run .a-drill .hole{animation:holeGrow 1.6s cubic-bezier(.45,0,.3,1) forwards}
+.tx.run .a-drill .plunge{animation:drillDown var(--txd,1.6s) cubic-bezier(.45,0,.3,1) forwards}
+.tx.run .a-drill .hole{animation:holeGrow var(--txd,1.6s) cubic-bezier(.45,0,.3,1) forwards}
 .a-drill .hole{transform-box:fill-box;transform-origin:center top;transform:scaleY(0)}
 /* Drehen */
 .tx.run .a-lathe .jaws{animation:jaws .18s linear infinite}
-.tx.run .a-lathe .slide{animation:latheFeed 1.6s cubic-bezier(.45,0,.3,1) forwards}
-.tx.run .a-lathe .cut{animation:latheCut 1.6s cubic-bezier(.45,0,.3,1) forwards}
+.tx.run .a-lathe .slide{animation:latheFeed var(--txd,1.6s) cubic-bezier(.45,0,.3,1) forwards}
+.tx.run .a-lathe .cut{animation:latheCut var(--txd,1.6s) cubic-bezier(.45,0,.3,1) forwards}
 .a-lathe .cut{transform-box:fill-box;transform-origin:right center;transform:scaleX(0)}
 /* Passung */
-.tx.run .a-fit .shaft{animation:shaftIn 1.6s cubic-bezier(.5,0,.25,1) forwards}
+.tx.run .a-fit .shaft{animation:shaftIn var(--txd,1.6s) cubic-bezier(.5,0,.25,1) forwards}
 .a-fit .draw{stroke-dasharray:var(--l,80);stroke-dashoffset:var(--l,80)}
-.tx.run .a-fit .draw{animation:draw .5s ease-out forwards;animation-delay:var(--d,.6s)}
+.tx.run .a-fit .draw{animation:draw calc(var(--txd,1.6s)*.31) ease-out forwards;animation-delay:var(--d,.6s)}
 .a-fit .fade{opacity:0}
-.tx.run .a-fit .fade{animation:fadeUp .4s var(--ease) forwards;animation-delay:var(--d,.8s)}
+.tx.run .a-fit .fade{animation:fadeUp calc(var(--txd,1.6s)*.25) var(--ease) forwards;animation-delay:var(--d,.8s)}
 .tx.run .a-fit .rotm{animation:hxv .3s linear infinite}
 .tx-label{font:800 24px var(--display);letter-spacing:-.01em;color:var(--ink);text-shadow:0 0 20px var(--glow);opacity:0}
-.tx.run .tx-label{animation:txLabel 1.6s var(--ease) forwards}
+.tx.run .tx-label{animation:txLabel var(--txd,1.6s) var(--ease) forwards}
 
 /* ---------- Animationen ---------- */
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tp{to{stroke-dashoffset:0}}
+@keyframes glare{0%,70%{left:-40%}100%{left:130%}}
+@keyframes load{to{width:100%}}
+@keyframes startPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.12)}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
 @keyframes pulse{0%,100%{box-shadow:0 0 36px var(--glow),0 0 90px var(--glow-2),inset 0 2px 20px rgba(255,255,255,.25)}50%{box-shadow:0 0 56px var(--glow),0 0 130px var(--glow-2),inset 0 2px 20px rgba(255,255,255,.25)}}
 @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,40px) scale(1.15)}}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -330,7 +436,7 @@ body.no-motion *, body.no-motion *::before, body.no-motion *::after{animation:no
 
 /* ---------- Schmale Fenster ---------- */
 @media (max-width:1020px){
-  .home{grid-template-columns:minmax(0,1fr)}
+  .cnc{grid-template-columns:minmax(0,1fr)}
   .calc{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:860px){
@@ -340,10 +446,17 @@ body.no-motion *, body.no-motion *::before, body.no-motion *::after{animation:no
   .seg button{flex:1;justify-content:center;padding:7px 10px}
 }
 @media (max-width:520px){
+  .cnc{padding:40px 14px 18px;border-radius:24px}
+  .bezel{padding:8px;border-radius:14px}
+  .screen{aspect-ratio:auto}
+  .scr-main{padding:8px 10px}
+  .dro b{font-size:16px}
+  .scr-main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .scr-path{display:none}
+  .knob{width:72px;height:72px}.kcap{inset:14px}
+  .start .cap{width:84px;height:84px}
+  .plate{font-size:9.5px;letter-spacing:.14em}
   .seg button svg{display:none}
-  .hero{min-height:440px;padding:32px 16px}
-  .go{width:170px;height:170px}
-  .go .cutter{width:80px;height:80px}
   .fields{grid-template-columns:1fr}
   .panel-head,.panel-body{padding-left:16px;padding-right:16px}
   .stat b{font-size:24px}
@@ -402,22 +515,67 @@ body.no-motion *, body.no-motion *::before, body.no-motion *::after{animation:no
 <!-- ===== Startseite ===== -->
 <section class="view" id="v-home">
   <div class="home">
-    <div class="hero">
-      <span class="orb a"></span><span class="orb b"></span><span class="grid-bg"></span>
-      <div>
-        <p class="greet" id="greet">Hallo!</p>
-        <h1>Schnittdaten in <em>Sekunden</em>,<br>direkt an der Maschine.</h1>
-      </div>
-      <button class="go" id="goBtn" type="button" aria-label="Fräsrechner öffnen">
-        <svg class="cutter" viewBox="0 0 100 100"><use href="#cutterTop"/></svg>
-        <b>Loslegen</b>
-      </button>
-      <div class="chips" id="chips"></div>
+    <div class="intro">
+      <p class="greet" id="greet">Hallo!</p>
+      <h1>Schnittdaten in <em>Sekunden</em>, direkt an der Maschine.</h1>
+      <p class="sub">Betriebsart wählen und auf den grünen Startknopf drücken.</p>
     </div>
-    <aside class="news">
-      <div class="news-head"><span class="live"></span><h2>Kurz &amp; knapp</h2></div>
-      <div class="news-body" id="facts"></div>
-    </aside>
+    <div class="cnc-wrap">
+      <span class="orb a"></span><span class="orb b"></span>
+      <div class="cnc" id="cnc">
+        <span class="screw s1"></span><span class="screw s2"></span><span class="screw s3"></span><span class="screw s4"></span>
+        <div class="plate"><i></i><b>ZR-CNC 5X</b>ZERSPANUNGSRECHNER</div>
+        <div class="scr-side">
+          <div class="bezel">
+            <div class="screen" id="screen" role="button" tabindex="0" aria-label="Rechner starten">
+              <div class="scr-top"><span class="scr-st"><i></i><span id="scrSt">BEREIT</span></span><span>PROG %O1000</span><span id="scrClock">--:--</span></div>
+              <div class="scr-main">
+                <div class="scr-path"><span class="cap">WERKZEUGWEG · T1</span>
+                  <svg viewBox="0 0 160 110" preserveAspectRatio="xMidYMid meet">
+                    <rect class="wpb" x="14" y="14" width="132" height="84" rx="3"/>
+                    <path class="tpg" d="M24 26 H136 V38 H24 V50 H136 V62 H24 V74 H136 V86 H24"/>
+                    <path class="tp" id="tpPath" d="M24 26 H136 V38 H24 V50 H136 V62 H24 V74 H136 V86 H24"/>
+                    <circle class="tool" r="3.2"><animateMotion dur="8s" repeatCount="indefinite" path="M24 26 H136 V38 H24 V50 H136 V62 H24 V74 H136 V86 H24"/></circle>
+                  </svg></div>
+                <div class="scr-dro">
+                  <div class="dro"><em>X</em><b id="dX">0.000</b><small>mm</small></div>
+                  <div class="dro"><em>Y</em><b id="dY">0.000</b><small>mm</small></div>
+                  <div class="dro"><em>Z</em><b id="dZ">0.000</b><small>mm</small></div>
+                  <div class="dro"><em>S</em><b id="dS">0</b><small>1/min</small></div>
+                  <div class="dro"><em>F</em><b id="dF">0</b><small>mm/min</small></div>
+                  <div class="dro dm"><em>M</em><b id="dM">FRÄSEN</b><small>Modus</small></div>
+                </div>
+              </div>
+              <div class="scr-formeln">
+                <div>Drehzahl&nbsp;&nbsp;&nbsp; <b>n = vc·1000 / (π·D)</b></div>
+                <div>Fräsen&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>vf = n·z·fz</b></div>
+                <div>Bohr/Dreh&nbsp;&nbsp; <b>vf = n·f</b></div>
+                <div>Schnittg.&nbsp;&nbsp; <b>vc = π·D·n / 1000</b></div>
+              </div>
+              <div class="scr-msg" id="scrMsg"><span>▶</span> BETRIEBSART WÄHLEN · ZYKLUS-START DRÜCKEN</div>
+              <div class="scr-soft"><span id="sk0">FORMELN</span><span>HILFE</span><span>LICHT</span><span>FARBE</span><span>SETUP</span></div>
+              <div class="scr-boot"><b id="bootT">FRÄSEN</b><i><s></s></i><small>RECHNER WIRD GELADEN …</small></div>
+            </div>
+          </div>
+          <div class="softkeys">
+            <button class="key" type="button" data-sk="formeln">F1</button><button class="key" type="button" data-sk="hilfe">F2</button><button class="key" type="button" data-sk="licht">F3</button><button class="key" type="button" data-sk="farbe">F4</button><button class="key" type="button" data-sk="setup">F5</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <div><p class="lbl-s">Betriebsart</p><div class="modes4" id="modes4"></div></div>
+          <div><p class="lbl-s">Override</p><div class="knobs">
+            <div class="kn"><div class="knob" id="knS" tabindex="0" role="slider" aria-label="Spindel-Override" aria-valuemin="50" aria-valuemax="120"></div><div class="kn-l"><b>SPINDEL</b><span id="ovS">100%</span></div></div>
+            <div class="kn"><div class="knob" id="knF" tabindex="0" role="slider" aria-label="Vorschub-Override" aria-valuemin="0" aria-valuemax="120"></div><div class="kn-l"><b>VORSCHUB</b><span id="ovF">100%</span></div></div>
+          </div></div>
+          <div><p class="lbl-s">Zyklus</p><div class="bigrow">
+            <button class="bb estop" id="estop" type="button" aria-pressed="false"><span class="ring"><span class="cap">NOT-AUS</span></span>NOT-AUS</button>
+            <button class="bb hold" id="hold" type="button"><span class="cap"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></span>HALT</button>
+            <button class="bb start" id="startBtn" type="button"><span class="cap"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span><b>START</b></button>
+          </div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cards" id="cards"></div>
   </div>
 </section>
 
@@ -584,11 +742,15 @@ body.no-motion *, body.no-motion *::before, body.no-motion *::after{animation:no
       <div class="toggle"><div><b>Neon-Leuchten</b><small>Glow um Knöpfe, Karten und Zahlen</small></div><button class="switch" id="glowSw" type="button" role="switch" aria-checked="true" aria-label="Neon-Leuchten"></button></div>
       <div class="toggle"><div><b>Maschinen-Übergang</b><small>Fräse, Bohrer, Drehmaschine oder Passung beim Wechseln</small></div><button class="switch" id="txSw" type="button" role="switch" aria-checked="true" aria-label="Maschinen-Übergang"></button></div>
       <div class="toggle"><div><b>Animationen</b><small>Bewegung in Grafiken und beim Wechseln</small></div><button class="switch" id="motionSw" type="button" role="switch" aria-checked="true" aria-label="Animationen"></button></div>
+      <div class="range"><div class="rl"><b>Animationsdauer</b><span id="durV">1,6 s</span></div>
+        <input type="range" id="durR" min="0.6" max="3" step="0.1" value="1.6" aria-label="Animationsdauer">
+        <div class="rs"><small>schnell</small><button class="link" id="durTest" type="button">▶ Ausprobieren</button><small>langsam</small></div></div>
     </section>
     <button class="link" id="resetSettings" type="button">Auf Standard zurücksetzen</button>
   </div>
 </aside>
 
+<div class="zflash" id="zflash"></div>
 <div class="tx" id="tx" aria-hidden="true">
   <div class="tx-stage">
     <div class="tx-tool"><div class="tx-art" id="txArt"></div>
@@ -622,22 +784,13 @@ const AREAS = [
 const NAMES = {home:'Start'}; AREAS.forEach(a=>NAMES[a.k]=a.name);
 document.querySelectorAll('[data-icon]').forEach(e=>e.innerHTML=svg(e.dataset.icon));
 $('seg').innerHTML = AREAS.map(a=>'<button type="button" data-v="'+a.k+'">'+svg(a.k)+a.name+'</button>').join('');
-$('chips').innerHTML = AREAS.map((a,i)=>'<button class="chip" type="button" data-v="'+a.k+'" style="--cc:'+a.c+';--i:'+i+'"><span class="ci" style="--cc:'+a.c+'">'+svg(a.k)+'</span>'+a.name+'</button>').join('');
-const FACTS = [
-  {day:'Formeln', items:[
-    {k:'fraesen', h:'Drehzahl', t:'<code>n = vc·1000 / (π·D)</code>', s:'Gilt für Fräsen, Bohren und Drehen.'},
-    {k:'fraesen', h:'Vorschub Fräsen', t:'<code>vf = n·z·fz</code>', s:'Zähnezahl mal Vorschub je Zahn mal Drehzahl.'},
-    {k:'drehen',  h:'Vorschub Drehen & Bohren', t:'<code>vf = n·f</code>', s:'f ist der Vorschub pro Umdrehung.'},
-  ]},
-  {day:'Passungen', items:[
-    {k:'passung', h:'H7/g6', t:'Spielpassung', s:'Leicht drehbar oder verschiebbar.'},
-    {k:'passung', h:'H7/k6', t:'Übergangspassung', s:'Mit leichtem Druck fügbar.'},
-    {k:'passung', h:'H7/p6', t:'Presspassung', s:'Nur mit Presse oder Erwärmen fügbar.'},
-  ]}
+const CARDS=[
+  {k:'fraesen', h:'Drehzahl', t:'<code>n = vc·1000 / (π·D)</code>', s:'Gilt für Fräsen, Bohren und Drehen.'},
+  {k:'fraesen', h:'Vorschub Fräsen', t:'<code>vf = n·z·fz</code>', s:'Drehzahl × Zähnezahl × Vorschub je Zahn.'},
+  {k:'drehen',  h:'Vorschub Drehen & Bohren', t:'<code>vf = n·f</code>', s:'f ist der Vorschub pro Umdrehung.'},
+  {k:'passung', h:'Passung H7/g6', t:'<code>Spielpassung</code>', s:'Leicht drehbar – H7/k6 Übergang, H7/p6 Pressung.'},
 ];
-let fi = 0;
-$('facts').innerHTML = FACTS.map(g=>'<div class="news-day">'+g.day+'</div>'+g.items.map(it=>{const a=AREAS.find(x=>x.k===it.k);return '<button class="news-item" type="button" data-v="'+it.k+'" style="--cc:'+a.c+';--i:'+(fi++)+'"><span class="ci" style="--cc:'+a.c+'">'+svg(it.k)+'</span><span class="txt"><b>'+it.h+'</b> · '+it.t+'<span class="t">'+it.s+'</span></span></button>'}).join('')).join('')
-  + '<div class="news-sum">Werte sind <b>Richtwerte</b>. Herstellerangaben deines Werkzeugs haben immer Vorrang.</div>';
+$('cards').innerHTML = CARDS.map((c,i)=>{const a=AREAS.find(x=>x.k===c.k);return '<button class="fcard" type="button" data-v="'+c.k+'" style="--cc:'+a.c+';--i:'+i+'"><span class="ci" style="--cc:'+a.c+'">'+svg(c.k)+'</span><span><b>'+c.h+'</b>'+c.t+'<span>'+c.s+'</span></span></button>'}).join('');
 const hr = new Date().getHours();
 $('greet').textContent = hr<11 ? 'Guten Morgen 👋' : hr<18 ? 'Hallo 👋' : 'Guten Abend 👋';
 
@@ -646,7 +799,7 @@ const PRESETS = [
   {name:'Neon-Blau', c:'#4d7cff'}, {name:'Cyber-Pink', c:'#ff2bd6'}, {name:'Neon-Grün', c:'#1fe08a'}, {name:'Laser-Orange', c:'#ff7a1a'},
   {name:'Ultraviolett', c:'#9b5cff'}, {name:'Eis-Türkis', c:'#00d0ff'}, {name:'Gold', c:'#ffc23d'}, {name:'Rubin', c:'#ff3b5c'},
 ];
-const DEFAULTS = {mode:'dark', accent:'#4d7cff', glow:true, motion:true, tx:true};
+const DEFAULTS = {mode:'dark', accent:'#4d7cff', glow:true, motion:true, tx:true, txDur:1.6};
 const SKEY = 'zerspanungsrechner.einstellungen';
 let S = {...DEFAULTS};
 try{ S = {...DEFAULTS, ...JSON.parse(localStorage.getItem(SKEY)||'{}')}; }catch(e){}
@@ -676,6 +829,9 @@ function applySettings(){
   document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('on', b.dataset.mode===S.mode));
   document.querySelectorAll('.swb').forEach(b=>b.classList.toggle('on', b.dataset.c.toLowerCase()===S.accent.toLowerCase()));
   $('customColor').value = S.accent; $('customHex').textContent = S.accent.toUpperCase();
+  st.setProperty('--txd', S.txDur+'s'); st.setProperty('--zd', (S.txDur*.8).toFixed(2)+'s');
+  $('durR').value = S.txDur; $('durV').textContent = String(S.txDur.toFixed(1)).replace('.',',')+' s';
+  $('durR').style.setProperty('--p', ((S.txDur-.6)/2.4*100)+'%');
   $('glowSw').setAttribute('aria-checked', S.glow); $('motionSw').setAttribute('aria-checked', S.motion); $('txSw').setAttribute('aria-checked', S.tx);
 }
 mq.addEventListener?.('change', ()=>{ if(S.mode==='system') applySettings(); });
@@ -687,6 +843,9 @@ $('customColor').addEventListener('change', ()=>saveSettings());
 $('glowSw').onclick = ()=>{ S.glow=!S.glow; saveSettings(); applySettings(); };
 $('motionSw').onclick = ()=>{ S.motion=!S.motion; saveSettings(); applySettings(); };
 $('txSw').onclick = ()=>{ S.tx=!S.tx; saveSettings(); applySettings(); };
+$('durR').addEventListener('input', e=>{ S.txDur=+e.target.value; applySettings(); });
+$('durR').addEventListener('change', ()=>saveSettings());
+$('durTest').onclick = ()=>{ closeDrawer(); setTimeout(()=>runTx(view==='home'?mode:view), 350); };
 $('resetSettings').onclick = ()=>{ S={...DEFAULTS}; saveSettings(); applySettings(); };
 function motionOn(){ return S.motion && !rm.matches; }
 function openDrawer(){ closeHelp(); $('drawer').classList.add('open'); $('scrim').classList.add('open'); $('drawer').setAttribute('aria-hidden','false'); }
@@ -695,9 +854,9 @@ $('gearBtn').onclick = openDrawer; $('closeDrawer').onclick = closeDrawer; $('sc
 applySettings();
 
 /* ---------- Navigation mit Fräser-Übergang ---------- */
-const TXART = {"fraesen": "<svg viewBox=\"0 0 240 200\" class=\"a-mill\">\n<rect x=\"14\" y=\"148\" width=\"212\" height=\"40\" rx=\"6\" fill=\"#868e9a\"/><rect x=\"14\" y=\"148\" width=\"212\" height=\"40\" rx=\"6\" fill=\"url(#shV)\"/>\n<rect class=\"groove\" x=\"46\" y=\"148\" width=\"140\" height=\"10\" fill=\"#1f232b\" opacity=\".75\"/>\n<g class=\"feed\">\n <rect x=\"84\" y=\"-6\" width=\"72\" height=\"44\" rx=\"10\" fill=\"url(#accG)\"/><rect x=\"84\" y=\"-6\" width=\"72\" height=\"44\" rx=\"10\" fill=\"url(#shH)\" opacity=\".7\"/>\n <rect x=\"96\" y=\"12\" width=\"48\" height=\"4\" rx=\"2\" fill=\"#fff\" opacity=\".35\"/>\n <path d=\"M100 38 H140 L132 56 H108Z\" fill=\"#5f6672\"/><path d=\"M100 38 H140 L132 56 H108Z\" fill=\"url(#shH)\"/>\n <rect x=\"111\" y=\"56\" width=\"18\" height=\"30\" fill=\"url(#steelH)\"/>\n <svg x=\"105\" y=\"84\" width=\"30\" height=\"74\" viewBox=\"105 84 30 74\" overflow=\"hidden\"><rect x=\"105\" y=\"84\" width=\"30\" height=\"74\" rx=\"4\" fill=\"url(#steelH)\"/>\n  <g class=\"hx\" stroke=\"#1d222b\" stroke-width=\"5\" opacity=\".65\"><path d=\"M101 80 L139 70\"/><path d=\"M101 92 L139 82\"/><path d=\"M101 104 L139 94\"/><path d=\"M101 116 L139 106\"/><path d=\"M101 128 L139 118\"/><path d=\"M101 140 L139 130\"/><path d=\"M101 152 L139 142\"/><path d=\"M101 164 L139 154\"/><path d=\"M101 176 L139 166\"/><path d=\"M101 188 L139 178\"/></g></svg>\n <rect x=\"105\" y=\"84\" width=\"30\" height=\"74\" rx=\"4\" fill=\"url(#shH)\" opacity=\".5\"/>\n <g fill=\"#c7cdd6\"><circle class=\"ch\" cx=\"137\" cy=\"150\" r=\"2.6\" style=\"--x:30px;--y:-34px\"/><circle class=\"ch\" cx=\"103\" cy=\"150\" r=\"2.2\" style=\"--x:-34px;--y:-26px;--d:.12s\"/><circle class=\"ch\" cx=\"136\" cy=\"148\" r=\"2\" style=\"--x:40px;--y:-14px;--d:.25s\"/><circle class=\"ch\" cx=\"104\" cy=\"148\" r=\"2.4\" style=\"--x:-22px;--y:-40px;--d:.36s\"/></g>\n</g></svg>", "bohren": "<svg viewBox=\"0 0 240 200\" class=\"a-drill\">\n<rect x=\"40\" y=\"118\" width=\"160\" height=\"72\" rx=\"6\" fill=\"#868e9a\"/><rect x=\"40\" y=\"118\" width=\"160\" height=\"72\" rx=\"6\" fill=\"url(#shV)\"/>\n<rect class=\"hole\" x=\"105\" y=\"118\" width=\"30\" height=\"52\" fill=\"#1a1d24\" opacity=\".85\"/>\n<g class=\"plunge\">\n <rect x=\"80\" y=\"-34\" width=\"80\" height=\"40\" rx=\"10\" fill=\"url(#accG)\"/><rect x=\"80\" y=\"-34\" width=\"80\" height=\"40\" rx=\"10\" fill=\"url(#shH)\" opacity=\".7\"/>\n <path d=\"M100 6 H140 L132 22 H108Z\" fill=\"#5f6672\"/><path d=\"M100 6 H140 L132 22 H108Z\" fill=\"url(#shH)\"/>\n <rect x=\"112\" y=\"22\" width=\"16\" height=\"36\" fill=\"url(#steelH)\"/>\n <svg x=\"106\" y=\"56\" width=\"28\" height=\"96\" viewBox=\"106 56 28 96\" overflow=\"hidden\"><path d=\"M106 56 H134 V128 L120 150 L106 128Z\" fill=\"url(#steelH)\"/>\n  <g class=\"hx\" stroke=\"#1d222b\" stroke-width=\"6\" opacity=\".6\" clip-path=\"url(#drillTip)\"><path d=\"M102 54 L138 44\"/><path d=\"M102 66 L138 56\"/><path d=\"M102 78 L138 68\"/><path d=\"M102 90 L138 80\"/><path d=\"M102 102 L138 92\"/><path d=\"M102 114 L138 104\"/><path d=\"M102 126 L138 116\"/><path d=\"M102 138 L138 128\"/><path d=\"M102 150 L138 140\"/><path d=\"M102 162 L138 152\"/></g></svg>\n <path d=\"M106 128 L120 150 L134 128\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.2\" opacity=\".6\"/>\n <g fill=\"#c7cdd6\"><circle class=\"ch\" cx=\"102\" cy=\"118\" r=\"2.4\" style=\"--x:-36px;--y:-30px\"/><circle class=\"ch\" cx=\"138\" cy=\"118\" r=\"2.4\" style=\"--x:38px;--y:-28px;--d:.14s\"/><circle class=\"ch\" cx=\"104\" cy=\"116\" r=\"2\" style=\"--x:-20px;--y:-44px;--d:.27s\"/><circle class=\"ch\" cx=\"136\" cy=\"116\" r=\"2\" style=\"--x:24px;--y:-46px;--d:.4s\"/></g>\n</g>\n<defs><clipPath id=\"drillTip\"><path d=\"M106 56 H134 V128 L120 150 L106 128Z\"/></clipPath></defs></svg>", "drehen": "<svg viewBox=\"0 0 240 200\" class=\"a-lathe\">\n<rect x=\"0\" y=\"168\" width=\"240\" height=\"14\" rx=\"4\" fill=\"#4c525c\"/><rect x=\"0\" y=\"168\" width=\"240\" height=\"14\" rx=\"4\" fill=\"url(#shV)\"/>\n<rect x=\"6\" y=\"38\" width=\"52\" height=\"124\" rx=\"10\" fill=\"url(#accG)\"/><rect x=\"6\" y=\"38\" width=\"52\" height=\"124\" rx=\"10\" fill=\"url(#shH)\" opacity=\".6\"/>\n<svg x=\"50\" y=\"44\" width=\"22\" height=\"112\" viewBox=\"50 44 22 112\" overflow=\"hidden\"><rect x=\"50\" y=\"44\" width=\"22\" height=\"112\" fill=\"#3c424c\"/>\n <g class=\"jaws\" fill=\"url(#steelH)\"><rect x=\"52\" y=\"40\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"65\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"90\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"115\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"140\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"165\" width=\"18\" height=\"12\" rx=\"2\"/></g></svg>\n<svg x=\"70\" y=\"72\" width=\"160\" height=\"56\" viewBox=\"70 72 160 56\" overflow=\"hidden\"><rect x=\"70\" y=\"72\" width=\"160\" height=\"56\" fill=\"url(#steelV)\"/>\n <g class=\"hx\" stroke=\"#000\" stroke-opacity=\".18\" stroke-width=\"2\"><path d=\"M70 60 L230 62\"/><path d=\"M70 69 L230 71\"/><path d=\"M70 78 L230 80\"/><path d=\"M70 87 L230 89\"/><path d=\"M70 96 L230 98\"/><path d=\"M70 105 L230 107\"/><path d=\"M70 114 L230 116\"/><path d=\"M70 123 L230 125\"/><path d=\"M70 132 L230 134\"/><path d=\"M70 141 L230 143\"/></g>\n <rect class=\"cut\" x=\"120\" y=\"72\" width=\"110\" height=\"7\" fill=\"#1a1d24\" opacity=\".55\"/><rect class=\"cut\" x=\"120\" y=\"121\" width=\"110\" height=\"7\" fill=\"#1a1d24\" opacity=\".55\"/></svg>\n<rect x=\"224\" y=\"86\" width=\"16\" height=\"28\" rx=\"3\" fill=\"#5f6672\"/>\n<g class=\"slide\">\n <rect x=\"216\" y=\"140\" width=\"22\" height=\"30\" rx=\"3\" fill=\"#5f6672\"/><rect x=\"216\" y=\"140\" width=\"22\" height=\"30\" rx=\"3\" fill=\"url(#shH)\"/>\n <rect x=\"216\" y=\"132\" width=\"44\" height=\"14\" rx=\"3\" fill=\"#6b727e\"/><rect x=\"216\" y=\"132\" width=\"44\" height=\"14\" rx=\"3\" fill=\"url(#shV)\"/>\n <path d=\"M216 128 L232 132 L222 140 Z\" style=\"fill:var(--accent-2)\"/>\n <g fill=\"#c7cdd6\"><circle class=\"ch\" cx=\"218\" cy=\"128\" r=\"2.4\" style=\"--x:30px;--y:30px\"/><circle class=\"ch\" cx=\"220\" cy=\"127\" r=\"2\" style=\"--x:44px;--y:14px;--d:.15s\"/><circle class=\"ch\" cx=\"218\" cy=\"128\" r=\"2.2\" style=\"--x:16px;--y:40px;--d:.3s\"/></g>\n</g></svg>", "passung": "<svg viewBox=\"0 0 240 200\" class=\"a-fit\">\n<rect x=\"20\" y=\"96\" width=\"70\" height=\"78\" rx=\"4\" fill=\"url(#hatch)\"/><rect x=\"150\" y=\"96\" width=\"70\" height=\"78\" rx=\"4\" fill=\"url(#hatch)\"/>\n<rect x=\"20\" y=\"96\" width=\"200\" height=\"78\" rx=\"4\" fill=\"none\" stroke=\"#2b3039\" stroke-width=\"1.5\"/>\n<line x1=\"90\" y1=\"96\" x2=\"90\" y2=\"174\" stroke=\"#2b3039\" stroke-width=\"1.5\"/><line x1=\"150\" y1=\"96\" x2=\"150\" y2=\"174\" stroke=\"#2b3039\" stroke-width=\"1.5\"/>\n<line x1=\"120\" y1=\"12\" x2=\"120\" y2=\"192\" stroke=\"var(--muted)\" stroke-width=\"1\" stroke-dasharray=\"8 3 2 3\" opacity=\".7\"/>\n<g class=\"shaft\">\n <path d=\"M93 14 H147 V170 L143 174 H97 L93 170Z\" fill=\"url(#steelH)\"/>\n <svg x=\"93\" y=\"14\" width=\"54\" height=\"160\" viewBox=\"93 14 54 160\" overflow=\"hidden\"><g class=\"rotm\" stroke=\"#000\" stroke-opacity=\".12\" stroke-width=\"3\"><path d=\"M85 14 L85 174\"/><path d=\"M94 14 L94 174\"/><path d=\"M103 14 L103 174\"/><path d=\"M112 14 L112 174\"/><path d=\"M121 14 L121 174\"/><path d=\"M130 14 L130 174\"/><path d=\"M139 14 L139 174\"/><path d=\"M148 14 L148 174\"/><path d=\"M157 14 L157 174\"/></g></svg>\n <path d=\"M93 14 H147 V170 L143 174 H97 L93 170Z\" fill=\"none\" style=\"stroke:var(--accent-2)\" stroke-width=\"1.5\"/>\n</g>\n<g class=\"dim\">\n <path class=\"draw\" d=\"M90 176 V192 M150 176 V192\" style=\"--l:40;--d:.85s\"/>\n <path class=\"draw\" d=\"M92 188 H148\" style=\"--l:60;--d:.95s\"/>\n <path class=\"fade\" d=\"M92 188 l7 -3 v6Z M148 188 l-7 -3 v6Z\" style=\"fill:var(--ink);stroke:none;--d:1.05s\"/>\n <path class=\"draw\" d=\"M93 40 V22 M147 40 V22\" style=\"--l:40;--d:.75s\"/>\n <path class=\"draw\" d=\"M95 26 H145\" style=\"--l:56;--d:.85s\"/>\n <path class=\"fade\" d=\"M95 26 l7 -3 v6Z M145 26 l-7 -3 v6Z\" style=\"fill:var(--ink);stroke:none;--d:.95s\"/>\n</g>\n<text class=\"dimt fade\" x=\"160\" y=\"198\" style=\"--d:1.05s\">Ø20 H7</text>\n<text class=\"dimt2 fade\" x=\"152\" y=\"22\" style=\"--d:.95s\">Ø20 g6</text>\n<text class=\"fade\" x=\"22\" y=\"90\" style=\"font:700 10.5px var(--body);fill:var(--muted);--d:1.1s\">Bohrung</text>\n<text class=\"fade\" x=\"42\" y=\"40\" style=\"font:700 10.5px var(--body);fill:var(--muted);--d:1s\">Welle</text>\n</svg>"};
+const TXART = {"fraesen": "<svg viewBox=\"0 0 240 200\" class=\"a-mill\">\n<rect x=\"14\" y=\"148\" width=\"212\" height=\"40\" rx=\"6\" fill=\"#868e9a\"/><rect x=\"14\" y=\"148\" width=\"212\" height=\"40\" rx=\"6\" fill=\"url(#shV)\"/>\n<rect class=\"groove\" x=\"46\" y=\"148\" width=\"140\" height=\"10\" fill=\"#1f232b\" opacity=\".75\"/>\n<g class=\"feed\">\n <rect x=\"84\" y=\"-6\" width=\"72\" height=\"44\" rx=\"10\" fill=\"url(#accG)\"/><rect x=\"84\" y=\"-6\" width=\"72\" height=\"44\" rx=\"10\" fill=\"url(#shH)\" opacity=\".7\"/>\n <rect x=\"96\" y=\"12\" width=\"48\" height=\"4\" rx=\"2\" fill=\"#fff\" opacity=\".35\"/>\n <path d=\"M100 38 H140 L132 56 H108Z\" fill=\"#5f6672\"/><path d=\"M100 38 H140 L132 56 H108Z\" fill=\"url(#shH)\"/>\n <rect x=\"111\" y=\"56\" width=\"18\" height=\"30\" fill=\"url(#steelH)\"/>\n <svg x=\"105\" y=\"84\" width=\"30\" height=\"74\" viewBox=\"105 84 30 74\" overflow=\"hidden\"><rect x=\"105\" y=\"84\" width=\"30\" height=\"74\" rx=\"4\" fill=\"url(#steelH)\"/>\n  <g class=\"hx\" stroke=\"#1d222b\" stroke-width=\"5\" opacity=\".65\"><path d=\"M101 80 L139 70\"/><path d=\"M101 92 L139 82\"/><path d=\"M101 104 L139 94\"/><path d=\"M101 116 L139 106\"/><path d=\"M101 128 L139 118\"/><path d=\"M101 140 L139 130\"/><path d=\"M101 152 L139 142\"/><path d=\"M101 164 L139 154\"/><path d=\"M101 176 L139 166\"/><path d=\"M101 188 L139 178\"/></g></svg>\n <rect x=\"105\" y=\"84\" width=\"30\" height=\"74\" rx=\"4\" fill=\"url(#shH)\" opacity=\".5\"/>\n <g fill=\"#c7cdd6\"><circle class=\"ch\" cx=\"137\" cy=\"150\" r=\"2.6\" style=\"--x:30px;--y:-34px\"/><circle class=\"ch\" cx=\"103\" cy=\"150\" r=\"2.2\" style=\"--x:-34px;--y:-26px;--d:calc(var(--txd,1.6s)*0.075)\"/><circle class=\"ch\" cx=\"136\" cy=\"148\" r=\"2\" style=\"--x:40px;--y:-14px;--d:calc(var(--txd,1.6s)*0.156)\"/><circle class=\"ch\" cx=\"104\" cy=\"148\" r=\"2.4\" style=\"--x:-22px;--y:-40px;--d:calc(var(--txd,1.6s)*0.225)\"/></g>\n</g></svg>", "bohren": "<svg viewBox=\"0 0 240 200\" class=\"a-drill\">\n<rect x=\"40\" y=\"118\" width=\"160\" height=\"72\" rx=\"6\" fill=\"#868e9a\"/><rect x=\"40\" y=\"118\" width=\"160\" height=\"72\" rx=\"6\" fill=\"url(#shV)\"/>\n<rect class=\"hole\" x=\"105\" y=\"118\" width=\"30\" height=\"52\" fill=\"#1a1d24\" opacity=\".85\"/>\n<g class=\"plunge\">\n <rect x=\"80\" y=\"-34\" width=\"80\" height=\"40\" rx=\"10\" fill=\"url(#accG)\"/><rect x=\"80\" y=\"-34\" width=\"80\" height=\"40\" rx=\"10\" fill=\"url(#shH)\" opacity=\".7\"/>\n <path d=\"M100 6 H140 L132 22 H108Z\" fill=\"#5f6672\"/><path d=\"M100 6 H140 L132 22 H108Z\" fill=\"url(#shH)\"/>\n <rect x=\"112\" y=\"22\" width=\"16\" height=\"36\" fill=\"url(#steelH)\"/>\n <svg x=\"106\" y=\"56\" width=\"28\" height=\"96\" viewBox=\"106 56 28 96\" overflow=\"hidden\"><path d=\"M106 56 H134 V128 L120 150 L106 128Z\" fill=\"url(#steelH)\"/>\n  <g class=\"hx\" stroke=\"#1d222b\" stroke-width=\"6\" opacity=\".6\" clip-path=\"url(#drillTip)\"><path d=\"M102 54 L138 44\"/><path d=\"M102 66 L138 56\"/><path d=\"M102 78 L138 68\"/><path d=\"M102 90 L138 80\"/><path d=\"M102 102 L138 92\"/><path d=\"M102 114 L138 104\"/><path d=\"M102 126 L138 116\"/><path d=\"M102 138 L138 128\"/><path d=\"M102 150 L138 140\"/><path d=\"M102 162 L138 152\"/></g></svg>\n <path d=\"M106 128 L120 150 L134 128\" fill=\"none\" stroke=\"#fff\" stroke-width=\"1.2\" opacity=\".6\"/>\n <g fill=\"#c7cdd6\"><circle class=\"ch\" cx=\"102\" cy=\"118\" r=\"2.4\" style=\"--x:-36px;--y:-30px\"/><circle class=\"ch\" cx=\"138\" cy=\"118\" r=\"2.4\" style=\"--x:38px;--y:-28px;--d:calc(var(--txd,1.6s)*0.088)\"/><circle class=\"ch\" cx=\"104\" cy=\"116\" r=\"2\" style=\"--x:-20px;--y:-44px;--d:calc(var(--txd,1.6s)*0.169)\"/><circle class=\"ch\" cx=\"136\" cy=\"116\" r=\"2\" style=\"--x:24px;--y:-46px;--d:calc(var(--txd,1.6s)*0.250)\"/></g>\n</g>\n<defs><clipPath id=\"drillTip\"><path d=\"M106 56 H134 V128 L120 150 L106 128Z\"/></clipPath></defs></svg>", "drehen": "<svg viewBox=\"0 0 240 200\" class=\"a-lathe\">\n<rect x=\"0\" y=\"168\" width=\"240\" height=\"14\" rx=\"4\" fill=\"#4c525c\"/><rect x=\"0\" y=\"168\" width=\"240\" height=\"14\" rx=\"4\" fill=\"url(#shV)\"/>\n<rect x=\"6\" y=\"38\" width=\"52\" height=\"124\" rx=\"10\" fill=\"url(#accG)\"/><rect x=\"6\" y=\"38\" width=\"52\" height=\"124\" rx=\"10\" fill=\"url(#shH)\" opacity=\".6\"/>\n<svg x=\"50\" y=\"44\" width=\"22\" height=\"112\" viewBox=\"50 44 22 112\" overflow=\"hidden\"><rect x=\"50\" y=\"44\" width=\"22\" height=\"112\" fill=\"#3c424c\"/>\n <g class=\"jaws\" fill=\"url(#steelH)\"><rect x=\"52\" y=\"40\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"65\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"90\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"115\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"140\" width=\"18\" height=\"12\" rx=\"2\"/><rect x=\"52\" y=\"165\" width=\"18\" height=\"12\" rx=\"2\"/></g></svg>\n<svg x=\"70\" y=\"72\" width=\"160\" height=\"56\" viewBox=\"70 72 160 56\" overflow=\"hidden\"><rect x=\"70\" y=\"72\" width=\"160\" height=\"56\" fill=\"url(#steelV)\"/>\n <g class=\"hx\" stroke=\"#000\" stroke-opacity=\".18\" stroke-width=\"2\"><path d=\"M70 60 L230 62\"/><path d=\"M70 69 L230 71\"/><path d=\"M70 78 L230 80\"/><path d=\"M70 87 L230 89\"/><path d=\"M70 96 L230 98\"/><path d=\"M70 105 L230 107\"/><path d=\"M70 114 L230 116\"/><path d=\"M70 123 L230 125\"/><path d=\"M70 132 L230 134\"/><path d=\"M70 141 L230 143\"/></g>\n <rect class=\"cut\" x=\"120\" y=\"72\" width=\"110\" height=\"7\" fill=\"#1a1d24\" opacity=\".55\"/><rect class=\"cut\" x=\"120\" y=\"121\" width=\"110\" height=\"7\" fill=\"#1a1d24\" opacity=\".55\"/></svg>\n<rect x=\"224\" y=\"86\" width=\"16\" height=\"28\" rx=\"3\" fill=\"#5f6672\"/>\n<g class=\"slide\">\n <rect x=\"216\" y=\"140\" width=\"22\" height=\"30\" rx=\"3\" fill=\"#5f6672\"/><rect x=\"216\" y=\"140\" width=\"22\" height=\"30\" rx=\"3\" fill=\"url(#shH)\"/>\n <rect x=\"216\" y=\"132\" width=\"44\" height=\"14\" rx=\"3\" fill=\"#6b727e\"/><rect x=\"216\" y=\"132\" width=\"44\" height=\"14\" rx=\"3\" fill=\"url(#shV)\"/>\n <path d=\"M216 128 L232 132 L222 140 Z\" style=\"fill:var(--accent-2)\"/>\n <g fill=\"#c7cdd6\"><circle class=\"ch\" cx=\"218\" cy=\"128\" r=\"2.4\" style=\"--x:30px;--y:30px\"/><circle class=\"ch\" cx=\"220\" cy=\"127\" r=\"2\" style=\"--x:44px;--y:14px;--d:calc(var(--txd,1.6s)*0.094)\"/><circle class=\"ch\" cx=\"218\" cy=\"128\" r=\"2.2\" style=\"--x:16px;--y:40px;--d:calc(var(--txd,1.6s)*0.187)\"/></g>\n</g></svg>", "passung": "<svg viewBox=\"0 0 240 200\" class=\"a-fit\">\n<rect x=\"20\" y=\"96\" width=\"70\" height=\"78\" rx=\"4\" fill=\"url(#hatch)\"/><rect x=\"150\" y=\"96\" width=\"70\" height=\"78\" rx=\"4\" fill=\"url(#hatch)\"/>\n<rect x=\"20\" y=\"96\" width=\"200\" height=\"78\" rx=\"4\" fill=\"none\" stroke=\"#2b3039\" stroke-width=\"1.5\"/>\n<line x1=\"90\" y1=\"96\" x2=\"90\" y2=\"174\" stroke=\"#2b3039\" stroke-width=\"1.5\"/><line x1=\"150\" y1=\"96\" x2=\"150\" y2=\"174\" stroke=\"#2b3039\" stroke-width=\"1.5\"/>\n<line x1=\"120\" y1=\"12\" x2=\"120\" y2=\"192\" stroke=\"var(--muted)\" stroke-width=\"1\" stroke-dasharray=\"8 3 2 3\" opacity=\".7\"/>\n<g class=\"shaft\">\n <path d=\"M93 14 H147 V170 L143 174 H97 L93 170Z\" fill=\"url(#steelH)\"/>\n <svg x=\"93\" y=\"14\" width=\"54\" height=\"160\" viewBox=\"93 14 54 160\" overflow=\"hidden\"><g class=\"rotm\" stroke=\"#000\" stroke-opacity=\".12\" stroke-width=\"3\"><path d=\"M85 14 L85 174\"/><path d=\"M94 14 L94 174\"/><path d=\"M103 14 L103 174\"/><path d=\"M112 14 L112 174\"/><path d=\"M121 14 L121 174\"/><path d=\"M130 14 L130 174\"/><path d=\"M139 14 L139 174\"/><path d=\"M148 14 L148 174\"/><path d=\"M157 14 L157 174\"/></g></svg>\n <path d=\"M93 14 H147 V170 L143 174 H97 L93 170Z\" fill=\"none\" style=\"stroke:var(--accent-2)\" stroke-width=\"1.5\"/>\n</g>\n<g class=\"dim\">\n <path class=\"draw\" d=\"M90 176 V192 M150 176 V192\" style=\"--l:40;--d:calc(var(--txd,1.6s)*0.531)\"/>\n <path class=\"draw\" d=\"M92 188 H148\" style=\"--l:60;--d:calc(var(--txd,1.6s)*0.594)\"/>\n <path class=\"fade\" d=\"M92 188 l7 -3 v6Z M148 188 l-7 -3 v6Z\" style=\"fill:var(--ink);stroke:none;--d:calc(var(--txd,1.6s)*0.656)\"/>\n <path class=\"draw\" d=\"M93 40 V22 M147 40 V22\" style=\"--l:40;--d:calc(var(--txd,1.6s)*0.469)\"/>\n <path class=\"draw\" d=\"M95 26 H145\" style=\"--l:56;--d:calc(var(--txd,1.6s)*0.531)\"/>\n <path class=\"fade\" d=\"M95 26 l7 -3 v6Z M145 26 l-7 -3 v6Z\" style=\"fill:var(--ink);stroke:none;--d:calc(var(--txd,1.6s)*0.594)\"/>\n</g>\n<text class=\"dimt fade\" x=\"160\" y=\"198\" style=\"--d:calc(var(--txd,1.6s)*0.656)\">Ø20 H7</text>\n<text class=\"dimt2 fade\" x=\"152\" y=\"22\" style=\"--d:calc(var(--txd,1.6s)*0.594)\">Ø20 g6</text>\n<text class=\"fade\" x=\"22\" y=\"90\" style=\"font:700 10.5px var(--body);fill:var(--muted);--d:calc(var(--txd,1.6s)*0.688)\">Bohrung</text>\n<text class=\"fade\" x=\"42\" y=\"40\" style=\"font:700 10.5px var(--body);fill:var(--muted);--d:1s\">Welle</text>\n</svg>"};
 
-let view = 'home', txRunning = false;
+let view = 'home', txRunning = false, zooming = false, mode = 'fraesen';
 function show(v){
   document.querySelectorAll('.view').forEach(s=>s.hidden = s.id!=='v-'+v);
   const el = $('v-'+v); el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter');
@@ -707,19 +866,22 @@ function show(v){
   try{ history.replaceState(null,'', v==='home' ? location.pathname+location.search : '#'+v); }catch(e){}
   if($('helpBox').hidden===false) renderHelp();
 }
+function runTx(v, mid){
+  if(txRunning) return; txRunning = true;
+  const D = S.txDur*1000, tx = $('tx');
+  $('txLabel').textContent = NAMES[v]; $('txArt').innerHTML = TXART[v];
+  tx.classList.remove('run'); void tx.offsetWidth; tx.classList.add('run');
+  if(mid) setTimeout(mid, D*.5);
+  setTimeout(()=>{ tx.classList.remove('run'); txRunning=false; }, D+30);
+}
 function go(v){
-  if(v===view || txRunning || !NAMES[v]) return;
+  if(v===view || txRunning || zooming || !NAMES[v]) return;
   closeHelp();
   if(!(S.tx && motionOn()) || v==='home'){ show(v); return; }
-  txRunning = true;
-  const tx = $('tx'); $('txLabel').textContent = NAMES[v]; $('txArt').innerHTML = TXART[v];
-  tx.classList.remove('run'); void tx.offsetWidth; tx.classList.add('run');
-  setTimeout(()=>show(v), 800);
-  setTimeout(()=>{ tx.classList.remove('run'); txRunning=false; }, 1620);
+  runTx(v, ()=>show(v));
 }
 document.addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b) go(b.dataset.v); });
 $('brand').onclick = ()=>go('home');
-$('goBtn').onclick = ()=>go('fraesen');
 document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeDrawer(); closeHelp(); } });
 
 /* ---------- Werkstoffe & Schneidstoffe ---------- */
@@ -882,7 +1044,7 @@ $("pM").addEventListener('input',pass); $("pT").addEventListener('input',pass);
 
 /* ---------- Hilfe ---------- */
 const HELP={
-home:{t:"Willkommen",e:"Dieser Rechner hilft dir, Schnittdaten fürs Fräsen, Bohren und Drehen zu bestimmen und ISO-Passungen nachzuschlagen.",a:["Oben einen Bereich wählen oder auf „Loslegen“ tippen.","Das Fragezeichen zeigt in jedem Bereich passende Tipps.","Alle Werte sind Richtwerte – im Zweifel gelten die Angaben des Werkzeugherstellers."]},
+home:{t:"Willkommen",e:"Dieser Rechner hilft dir, Schnittdaten fürs Fräsen, Bohren und Drehen zu bestimmen und ISO-Passungen nachzuschlagen. Die Startseite ist ein Bedienpult wie an einer CNC-Fräse.",a:["Rechts eine Betriebsart wählen und den grünen START-Knopf drücken – oder einfach auf den Bildschirm tippen.","Die Tasten F1–F5 unter dem Bildschirm zeigen Formeln, Hilfe, Hell/Dunkel, Farbe und Einstellungen.","Die Override-Drehknöpfe kannst du mit der Maus ziehen oder scrollen, NOT-AUS sperrt den Start.","Das Fragezeichen zeigt in jedem Bereich passende Tipps.","Alle Werte sind Richtwerte – im Zweifel gelten die Angaben des Werkzeugherstellers."]},
 fraesen:{t:"Fräsen",e:"Du gibst nur Fräserdurchmesser, Zähnezahl und Vorschub je Zahn ein. Wählst du Werkstoff und Schneidstoff, holt sich der Rechner die passende Schnittgeschwindigkeit. Daraus berechnet er: n = vc · 1000 / (π · D) und vf = n · z · fz. Alternativ kannst du vc oder die Drehzahl selbst eintragen.",
  a:["Herstellerangaben des Fräsers haben immer Vorrang vor diesen Richtwerten.","Kleine Fräser brauchen einen kleineren Vorschub je Zahn.","Bei Vollnut (Fräser voll im Material) oder langer Auskraglänge vc und fz reduzieren.","Prüfe die Maximaldrehzahl deiner Maschine – wird sie überschritten, vf passend herunterrechnen.","Alu mit Kühlschmierstoff oder Minimalmengenschmierung fräsen, Grauguss meist trocken.","Wenn möglich im Gleichlauf fräsen – das schont die Schneide."]},
 bohren:{t:"Bohren",e:"Mit Bohrerdurchmesser und Vorschub pro Umdrehung berechnet der Rechner die Drehzahl und die Vorschubgeschwindigkeit vf = n · f. Die Schnittgeschwindigkeit wird beim Bohren mit ca. 70 % des Fräswerts angesetzt.",
@@ -895,6 +1057,107 @@ function renderHelp(){ const h=HELP[view]; $('helpBox').innerHTML='<h3>'+h.t+'</
 function closeHelp(){ $('helpBox').hidden=true; $('helpBtn').classList.remove('on'); $('helpBtn').setAttribute('aria-expanded','false'); }
 $('helpBtn').onclick=e=>{ e.stopPropagation(); if($('helpBox').hidden){ renderHelp(); $('helpBox').hidden=false; $('helpBtn').classList.add('on'); $('helpBtn').setAttribute('aria-expanded','true'); } else closeHelp(); };
 document.addEventListener('click',e=>{ if(!$('helpBox').hidden && !$('helpBox').contains(e.target) && !$('helpBtn').contains(e.target)) closeHelp(); });
+
+
+/* ---------- Bedienpult ---------- */
+const MODECOL = Object.fromEntries(AREAS.map(a=>[a.k,a.c]));
+$('modes4').innerHTML = AREAS.map(a=>'<button class="key mkey" type="button" data-mk="'+a.k+'" style="--cc:'+a.c+'"><span class="led"></span>'+svg(a.k)+a.name+'</button>').join('');
+let estop=false, running=false, ov={S:100,F:100}, msgT=null;
+function setMode(m){
+  mode=m;
+  document.querySelectorAll('.mkey').forEach(b=>b.classList.toggle('on', b.dataset.mk===m));
+  $('dM').textContent = NAMES[m].toUpperCase(); $('dM').parentNode.style.setProperty('--mc', MODECOL[m]);
+  if(!estop) msg('▶ '+NAMES[m].toUpperCase()+' GEWÄHLT · ZYKLUS-START DRÜCKEN', 0);
+}
+function msg(t, ms){
+  clearTimeout(msgT);
+  $('scrMsg').innerHTML = t.replace(/^▶/,'<span>▶</span>');
+  if(ms) msgT=setTimeout(()=>{ if(!estop) $('scrMsg').innerHTML='<span>▶</span> '+NAMES[mode].toUpperCase()+' GEWÄHLT · ZYKLUS-START DRÜCKEN'; }, ms);
+}
+document.querySelectorAll('.mkey').forEach(b=>b.onclick=()=>setMode(b.dataset.mk));
+// Drehknöpfe
+function knob(id, key, min, max){
+  const el=$(id); let ticks='';
+  for(let i=0;i<=14;i++){ const a=(-135+i*270/14)*Math.PI/180, r1=i%7===0?41:44, r2=49; ticks+='<line class="tick" x1="'+(50+r1*Math.sin(a)).toFixed(1)+'" y1="'+(50-r1*Math.cos(a)).toFixed(1)+'" x2="'+(50+r2*Math.sin(a)).toFixed(1)+'" y2="'+(50-r2*Math.cos(a)).toFixed(1)+'"/>'; }
+  el.innerHTML='<svg viewBox="0 0 100 100">'+ticks+'<circle class="trk" cx="50" cy="50" r="37" stroke-dasharray="174.4 999" transform="rotate(135 50 50)"/><circle class="arc" cx="50" cy="50" r="37" transform="rotate(135 50 50)"/></svg><div class="kcap"><i></i></div>';
+  const set=v=>{ v=Math.max(min,Math.min(max,Math.round(v/5)*5)); ov[key]=v; const f=(v-min)/(max-min);
+    el.querySelector('.kcap').style.setProperty('--rot',(-135+f*270)+'deg'); el.querySelector('.arc').setAttribute('stroke-dasharray',(174.4*f).toFixed(1)+' 999');
+    el.setAttribute('aria-valuenow',v); $('ov'+key).textContent=v+'%'; };
+  set(100);
+  let y0=null, v0=0;
+  el.addEventListener('pointerdown',e=>{ y0=e.clientY; v0=ov[key]; el.setPointerCapture(e.pointerId); });
+  el.addEventListener('pointermove',e=>{ if(y0!==null) set(v0+(y0-e.clientY)*.6); });
+  el.addEventListener('pointerup',()=>{ y0=null; });
+  el.addEventListener('wheel',e=>{ e.preventDefault(); set(ov[key]+(e.deltaY<0?5:-5)); },{passive:false});
+  el.addEventListener('keydown',e=>{ if(e.key==='ArrowUp'||e.key==='ArrowRight'){e.preventDefault();set(ov[key]+5)} if(e.key==='ArrowDown'||e.key==='ArrowLeft'){e.preventDefault();set(ov[key]-5)} });
+}
+knob('knS','S',50,120); knob('knF','F',0,120);
+// Anzeige
+let t0=performance.now(), sCur=0, fCur=0;
+function tick(){
+  const t=(performance.now()-t0)/1000, m=motionOn();
+  const sT = running ? 8000*ov.S/100 : 0, fT = running ? 1600*ov.F/100 : 0;
+  sCur += (sT-sCur)*.12; fCur += (fT-fCur)*.12;
+  const ph = m ? t : 0;
+  $('dX').textContent = (112.5+56*Math.sin(ph*.55)).toFixed(3);
+  $('dY').textContent = (-24.3+31*Math.cos(ph*.37)).toFixed(3);
+  $('dZ').textContent = (running ? -5+1.2*Math.sin(ph*3) : 25).toFixed(3);
+  $('dS').textContent = Math.round(sCur); $('dF').textContent = Math.round(fCur);
+  const d=new Date(); $('scrClock').textContent = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+// Softkeys
+const SK = {
+  formeln:()=>{ const on=$('screen').classList.toggle('f'); $('sk0').classList.toggle('on',on); },
+  hilfe:()=>{ $('helpBtn').click(); },
+  licht:()=>{ const cur=document.body.dataset.mode; S.mode = cur==='dark'?'light':'dark'; saveSettings(); applySettings(); },
+  farbe:()=>{ const i=PRESETS.findIndex(p=>p.c.toLowerCase()===S.accent.toLowerCase()); S.accent=PRESETS[(i+1)%PRESETS.length].c; saveSettings(); applySettings(); msg('FARBE: '+PRESETS[(i+1)%PRESETS.length].name.toUpperCase(), 1600); },
+  setup:()=>openDrawer(),
+};
+document.querySelectorAll('[data-sk]').forEach(b=>b.addEventListener('click',e=>{ e.stopPropagation(); SK[b.dataset.sk](); }));
+// Not-Aus & Halt
+$('estop').onclick=()=>{
+  estop=!estop; running=false; $('estop').classList.toggle('on',estop); $('estop').setAttribute('aria-pressed',estop);
+  $('screen').classList.toggle('alarm',estop); $('scrSt').textContent = estop?'ALARM':'BEREIT';
+  if(estop) msg('⚠ NOT-AUS AKTIV · ZUM ENTRIEGELN ERNEUT DRÜCKEN',0); else setMode(mode);
+};
+$('hold').onclick=()=>{ if(estop) return; running=false; $('screen').classList.remove('run'); $('scrSt').textContent='HALT'; msg('‖ VORSCHUB HALT', 1500); setTimeout(()=>{ if(!estop&&!running) $('scrSt').textContent='BEREIT'; },1500); };
+// Start → Zoom in den Bildschirm
+function startCycle(){
+  if(zooming || txRunning) return;
+  const cnc=$('cnc');
+  if(estop){ cnc.classList.remove('shake'); void cnc.offsetWidth; cnc.classList.add('shake'); msg('⚠ NOT-AUS ZUERST ENTRIEGELN',0); return; }
+  const target = mode;
+  if(!motionOn()){ show(target); return; }
+  zooming = true; running = true; closeHelp();
+  $('screen').classList.remove('f'); $('sk0').classList.remove('on');
+  $('screen').classList.add('run'); $('scrSt').textContent='LÄUFT'; msg('▶ ZYKLUS LÄUFT · '+NAMES[target].toUpperCase(),0);
+  $('startBtn').classList.add('down');
+  const Z = S.txDur*800;
+  setTimeout(()=>{
+    $('startBtn').classList.remove('down');
+    $('bootT').textContent = NAMES[target].toUpperCase(); $('screen').classList.add('boot');
+    const scr=$('screen').getBoundingClientRect(), c=cnc.getBoundingClientRect();
+    const k=Math.max(innerWidth/scr.width, innerHeight/scr.height)*1.12;
+    const cx=scr.left+scr.width/2, cy=scr.top+scr.height/2;
+    document.documentElement.classList.add('zooming');
+    cnc.style.transformOrigin=(cx-c.left)+'px '+(cy-c.top)+'px';
+    cnc.style.transform='translate('+(innerWidth/2-cx)+'px,'+(innerHeight/2-cy)+'px) scale('+k.toFixed(3)+')';
+    setTimeout(()=>$('zflash').classList.add('on'), Z*.82);
+    setTimeout(()=>{
+      show(target);
+      cnc.style.transition='none'; cnc.style.transform=''; $('screen').classList.remove('boot','run');
+      running=false; $('scrSt').textContent='BEREIT'; setMode(mode);
+      document.documentElement.classList.remove('zooming');
+      requestAnimationFrame(()=>{ cnc.style.transition=''; $('zflash').classList.remove('on'); zooming=false; });
+    }, Z+120);
+  }, Math.min(450, Z*.35));
+}
+$('startBtn').onclick=startCycle;
+$('screen').addEventListener('click', e=>{ if(!e.target.closest('[data-sk]')) startCycle(); });
+$('screen').addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); startCycle(); } });
+setMode('fraesen');
 
 /* ---------- Start ---------- */
 calc(); pass();
