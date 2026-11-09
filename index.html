@@ -1,239 +1,855 @@
-<!DOCTYPE html>
-<html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zerspanungsrechner</title>
+<meta name="description" content="Kostenloser Zerspanungsrechner: Drehzahl, Schnittgeschwindigkeit und Vorschub fürs Fräsen, Bohren und Drehen – plus ISO-Passungen.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234d7cff'/%3E%3Cstop offset='1' stop-color='%233fd0ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='18' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M26 10h12v12H26z'/%3E%3Cpath d='M24 22h16v22l-8 8-8-8z'/%3E%3Cpath d='m24 30 16-4M24 39l16-4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap">
 <style>
-:root{--bg:#f2f4f7;--card:#fff;--tx:#1b1f24;--mu:#667;--ac:#0a84ff;--bd:#dde1e6}
-body.dark{--bg:#111418;--card:#1c2128;--tx:#e8eaed;--mu:#9aa3ad;--ac:#3ea6ff;--bd:#2c333b}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx);transition:background .3s,color .3s}
-header{display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--card);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:11}
-#burger{width:40px;height:40px;background:none;border:0;cursor:pointer;position:relative;z-index:12;padding:0}
-#burger span{position:absolute;left:8px;width:24px;height:2.5px;border-radius:2px;background:var(--tx);transition:transform .45s cubic-bezier(.7,-0.4,.3,1.4),opacity .25s,top .3s}
-#burger span:nth-child(1){top:12px}#burger span:nth-child(2){top:19px}#burger span:nth-child(3){top:26px}
-#burger.x span:nth-child(1){top:19px;transform:rotate(45deg)}#burger.x span:nth-child(2){opacity:0;transform:translateX(-12px)}#burger.x span:nth-child(3){top:19px;transform:rotate(-45deg)}
-#helpBtn{margin-left:auto;width:36px;height:36px;border-radius:50%;border:2px solid var(--ac);background:none;color:var(--ac);font-size:18px;font-weight:700;cursor:pointer;transition:transform .3s,background .2s,color .2s}
-#helpBtn.on{background:var(--ac);color:#fff;transform:rotate(360deg)}
-#helpBox{position:fixed;top:66px;right:12px;width:min(380px,calc(100% - 24px));max-height:72vh;overflow:auto;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px 18px 8px;z-index:7;box-shadow:0 18px 50px #0006;
- clip-path:circle(0% at calc(100% - 22px) -10px);opacity:0;pointer-events:none;transition:clip-path .55s cubic-bezier(.2,.8,.2,1),opacity .3s}
-#helpBox.open{clip-path:circle(150% at calc(100% - 22px) -10px);opacity:1;pointer-events:auto}
-#helpBox h3{margin:0 0 6px}#helpBox h4{margin:14px 0 4px;color:var(--ac)}#helpBox p,#helpBox li{font-size:14px;line-height:1.5}#helpBox ul{padding-left:18px;margin:4px 0}
-#helpBox .about{border-top:1px solid var(--bd);margin-top:12px;padding-top:6px;color:var(--mu)}
-h1{font-size:19px;margin:0}
-#menu{position:fixed;top:0;left:0;width:280px;height:100%;background:var(--card);border-right:1px solid var(--bd);border-radius:0 26px 26px 0;z-index:10;display:flex;flex-direction:column;padding:70px 18px 18px;
- transform:translateX(-110%) skewY(-4deg);transform-origin:left top;transition:transform .6s cubic-bezier(.2,1.25,.3,1);box-shadow:20px 0 60px #0000}
-#menu.open{transform:none;box-shadow:20px 0 60px #0007}
-#menu h3,#menu .nav,#menu .settings{opacity:0;transform:translateX(-30px);transition:opacity .35s,transform .45s cubic-bezier(.2,1.4,.4,1)}
-#menu.open h3,#menu.open .nav,#menu.open .settings{opacity:1;transform:none}
-#menu.open .nav:nth-of-type(1){transition-delay:.12s}#menu.open .nav:nth-of-type(2){transition-delay:.18s}#menu.open .nav:nth-of-type(3){transition-delay:.24s}#menu.open .nav:nth-of-type(4){transition-delay:.30s}#menu.open .settings{transition-delay:.38s}
-#shade{position:fixed;inset:0;background:#0007;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9;opacity:0;pointer-events:none;transition:opacity .4s}#shade.open{opacity:1;pointer-events:auto}
-#menu button.nav{display:block;width:100%;text-align:left;padding:13px;margin:3px 0;border:0;border-radius:10px;background:none;color:var(--tx);font-size:16px;cursor:pointer}
-#menu button.nav:hover,#menu button.nav.act{background:var(--ac);color:#fff}
-.settings{margin-top:auto;border-top:1px solid var(--bd);padding-top:12px}
-.settings label{display:flex;justify-content:space-between;align-items:center;padding:8px 4px}
-main{max-width:640px;margin:0 auto;padding:18px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 4px 18px #0001}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.f{display:flex;flex-direction:column;margin-bottom:12px;position:relative}
-.f span{font-size:13px;color:var(--mu);margin-bottom:4px}
-input,select{padding:11px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font-size:16px;width:100%}
-.sug{position:absolute;top:100%;left:0;right:0;background:var(--card);border:1px solid var(--bd);border-radius:10px;z-index:4;max-height:220px;overflow:auto;display:none}
-.sug div{padding:11px;cursor:pointer}.sug div:hover{background:var(--ac);color:#fff}
-.res{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.r{background:var(--bg);border-radius:12px;padding:12px}.r b{display:block;font-size:22px;color:var(--ac)}.r small{color:var(--mu)}
-.hint{font-size:13px;color:var(--mu)}
-#intro{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:8;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s .5s}
-#intro.show{opacity:1;visibility:visible;transition:opacity .4s ease}
-#intro .cw{transform:scale(.3) rotate(-120deg);opacity:0;transition:transform .8s cubic-bezier(.2,1.3,.3,1),opacity .4s}
-#intro.show .cw{transform:none;opacity:1}
-#intro.out .cw{transform:scale(2.2);opacity:0;transition:transform .55s cubic-bezier(.6,0,.8,.4),opacity .45s}
-#intro h2{margin-top:24px;opacity:0;transform:translateY(14px);letter-spacing:.3em;transition:opacity .5s .25s,transform .6s .25s cubic-bezier(.2,1.2,.3,1),letter-spacing .8s .25s}
-#intro.show h2{opacity:1;transform:none;letter-spacing:.02em}#intro.out h2{opacity:0;transform:translateY(-10px);transition:opacity .3s,transform .3s}
-.page.on .card{animation:cardIn .65s cubic-bezier(.2,1,.3,1) both}
-.page.on .card:nth-of-type(2){animation-delay:.08s}.page.on .card:nth-of-type(3){animation-delay:.16s}.page.on .card:nth-of-type(4){animation-delay:.24s}
-@keyframes cardIn{from{opacity:0;transform:translateY(26px) scale(.98);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
-.cutter{width:180px;height:180px;animation:spin 1.2s linear infinite;filter:drop-shadow(0 10px 20px #0004)}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes fade{to{opacity:1}}
-.page{display:none;animation:fade .4s}.page.on{display:block}
-body.noanim *{animation:none!important;transition:none!important}body.noanim .page{opacity:1}
-.stage{padding:10px 10px 4px;overflow:hidden}
-.scene{width:100%;height:auto;display:block}
-.scene .lbl{font-size:11px;fill:var(--mu)}
-.scene .bg{fill:var(--bg)}
+/* Stil wie der Mail-Sortierer: dunkel, Neon-Akzent, Manrope, Glow, weiche Animationen */
+:root{
+  --bg:#0b0d12; --surface:#12151c; --surface-2:#1a1e27; --line:#262b36; --ink:#eef1f7; --muted:#8f97a8;
+  --accent:#4d7cff; --accent-2:#3fd0ff; --accent-ink:#ffffff;
+  --warn:#ffb020; --ok:#2bf598;
+  --display:"Manrope", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --body:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+body{
+  --accent-text:var(--accent);
+  --glow:color-mix(in srgb, var(--accent) 50%, transparent);
+  --glow-2:color-mix(in srgb, var(--accent-2) 42%, transparent);
+  --accent-soft:color-mix(in srgb, var(--accent) 16%, transparent);
+  --shadow:0 1px 2px rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.35);
+  --shadow-lg:0 30px 70px rgba(0,0,0,.55);
+  --orb:.55;
+  color-scheme:dark;
+}
+body[data-mode="light"]{
+  --bg:#f2f3f8; --surface:#ffffff; --surface-2:#eceef5; --line:#dfe2ea; --ink:#141720; --muted:#667085;
+  --warn:#b97300; --ok:#0e8a55;
+  --accent-text:color-mix(in srgb, var(--accent) 72%, #000);
+  --glow:color-mix(in srgb, var(--accent) 30%, transparent);
+  --glow-2:color-mix(in srgb, var(--accent-2) 24%, transparent);
+  --accent-soft:color-mix(in srgb, var(--accent) 12%, #fff);
+  --shadow:0 1px 2px rgba(20,24,40,.05), 0 8px 24px rgba(20,24,40,.08);
+  --shadow-lg:0 24px 60px rgba(20,24,40,.16);
+  --orb:.35;
+  color-scheme:light;
+}
+body.no-glow{--glow:transparent;--glow-2:transparent;--orb:0}
+
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased;transition:background .4s ease, color .4s ease}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.gutter{padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+[hidden]{display:none !important}
+
+/* ---------- Kopfleiste ---------- */
+.top{display:flex;align-items:center;gap:10px;padding-block:12px;min-height:66px;position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:10px;border:0;background:none;padding:4px;font:800 16px var(--display);letter-spacing:-.01em}
+.logo{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 0 18px var(--glow);color:var(--accent-ink);transition:transform .5s var(--ease)}
+.brand:hover .logo{transform:rotate(-12deg) scale(1.06)}
+.logo svg{width:17px;height:17px}
+.seg{display:flex;gap:2px;background:var(--surface-2);padding:3px;border-radius:13px;margin-inline:auto;border:1px solid var(--line)}
+.seg button{border:0;background:none;color:var(--muted);padding:7px 14px;border-radius:10px;font-weight:650;font-size:14px;display:flex;align-items:center;gap:7px;white-space:nowrap;transition:color .2s, background .25s, box-shadow .25s}
+.seg button svg{width:16px;height:16px}
+.seg button:hover{color:var(--ink)}
+.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 45%,transparent), 0 0 16px var(--glow)}
+.seg button.on svg{color:var(--accent-text)}
+.tools{display:flex;align-items:center;gap:8px;margin-left:auto;position:relative}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;box-shadow:var(--shadow);transition:box-shadow .25s, border-color .25s}
+.icon-btn svg{width:19px;height:19px;transition:transform .6s var(--ease)}
+.icon-btn:hover{border-color:color-mix(in srgb,var(--accent) 60%,transparent);box-shadow:0 0 18px var(--glow)}
+#gearBtn:hover svg{transform:rotate(90deg)}
+#helpBtn.on{border-color:var(--accent);box-shadow:0 0 18px var(--glow);color:var(--accent-text)}
+#helpBtn.on svg{transform:rotate(360deg)}
+
+/* Hilfe-Popup */
+.drop{position:absolute;right:0;top:calc(100% + 10px);width:min(370px,calc(100vw - 32px));max-height:72vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-lg), 0 0 30px var(--glow);padding:18px 18px 10px;transform-origin:top right;animation:dropIn .22s var(--ease);z-index:20}
+.drop::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent)}
+.drop h3{margin:0 0 4px;font:800 18px var(--display);letter-spacing:-.01em}
+.drop h4{margin:14px 0 6px;font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.drop p,.drop li{font-size:14px;line-height:1.5;margin:0}
+.drop ul{padding-left:18px;margin:0;display:grid;gap:5px}
+.drop li{animation:rise .35s var(--ease) both;animation-delay:calc(var(--i,0)*40ms + .05s)}
+.drop .about{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;color:var(--muted);font-size:12.5px}
+
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+.view{flex:1;padding-block:6px 28px}
+.view.enter{animation:viewIn .45s var(--ease)}
+
+/* ---------- Startseite ---------- */
+.home{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;max-width:1240px;width:100%;margin:0 auto}
+.hero{position:relative;overflow:hidden;border-radius:26px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:26px;padding:40px 20px;min-height:500px;border:1px solid var(--line);background:radial-gradient(120% 90% at 50% 0%, color-mix(in srgb,var(--surface) 70%,transparent), transparent), var(--surface)}
+.hero > *{position:relative;z-index:1}
+.orb{position:absolute !important;z-index:0 !important;border-radius:50%;filter:blur(60px);opacity:var(--orb);pointer-events:none}
+.orb.a{width:340px;height:340px;background:var(--accent);top:-80px;left:-60px;animation:drift 14s ease-in-out infinite alternate}
+.orb.b{width:300px;height:300px;background:var(--accent-2);bottom:-90px;right:-50px;animation:drift 17s ease-in-out infinite alternate-reverse}
+.grid-bg{position:absolute !important;inset:0;z-index:0 !important;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 70%);mask-image:radial-gradient(circle at 50% 50%,#000,transparent 70%);opacity:.5}
+.greet{font:600 14px var(--body);color:var(--muted);margin:0;letter-spacing:.02em}
+.hero h1{font:800 clamp(28px,4.4vw,44px)/1.12 var(--display);letter-spacing:-.03em;margin:6px 0 0;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--accent-text);text-shadow:0 0 22px var(--glow)}
+.go{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:0;width:200px;height:200px;border-radius:50%;color:var(--accent-ink);
+  background:radial-gradient(circle at 30% 25%, color-mix(in srgb,var(--accent) 70%,#fff), var(--accent) 55%, color-mix(in srgb,var(--accent) 65%,#000));
+  box-shadow:0 0 40px var(--glow), 0 0 100px var(--glow-2), inset 0 2px 20px rgba(255,255,255,.25);
+  animation:pulse 3.2s ease-in-out infinite;transition:transform .25s var(--ease)}
+.go::before{content:"";position:absolute;inset:-14px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),transparent 45%,var(--accent-2),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));animation:spin 5s linear infinite;filter:drop-shadow(0 0 6px var(--glow))}
+.go::after{content:"";position:absolute;inset:-30px;border-radius:50%;border:1px dashed color-mix(in srgb,var(--accent-2) 50%,transparent);animation:spin 22s linear infinite reverse}
+.go:hover{transform:scale(1.05)}
+.go:active{transform:scale(.97)}
+.go .cutter{width:96px;height:96px;animation:spin 1.4s linear infinite;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.go:hover .cutter{animation-duration:.45s}
+.go b{font:800 18px var(--display);letter-spacing:-.01em}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:620px}
+.chip{--cc-text:var(--cc);display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface-2) 80%,transparent);padding:6px 14px 6px 7px;border-radius:30px;font-size:13.5px;font-weight:650;animation:rise .45s var(--ease) both;animation-delay:calc(var(--i,0)*55ms + .15s);transition:border-color .2s, box-shadow .2s, transform .2s}
+.chip:hover{border-color:var(--cc-text);box-shadow:0 0 16px color-mix(in srgb,var(--cc) 35%,transparent);transform:translateY(-2px)}
+
+/* Bereichs-Symbole */
+.ci{--cc-text:var(--cc);width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:var(--cc-text);background:color-mix(in srgb,var(--cc) 15%,transparent);flex:none}
+body[data-mode="light"] .ci, body[data-mode="light"] .chip{--cc-text:color-mix(in srgb,var(--cc) 68%,#000)}
+.ci svg{width:16px;height:16px}
+.ci.lg{width:36px;height:36px;border-radius:11px}
+.ci.lg svg{width:20px;height:20px}
+
+/* Formel-Leiste */
+.news{background:var(--surface);border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.news::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent);box-shadow:0 0 14px var(--glow)}
+.news-head{padding:18px 18px 8px;display:flex;align-items:center;gap:10px}
+.news-head .live{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:blink 1.8s ease-in-out infinite}
+.news-head h2{margin:0;font:800 17px var(--display);letter-spacing:-.01em}
+.news-body{padding:0 10px 14px;display:flex;flex-direction:column;gap:4px}
+.news-day{font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:12px 8px 6px}
+.news-item{display:flex;gap:11px;align-items:flex-start;text-align:left;width:100%;border:1px solid transparent;background:none;padding:10px 8px;border-radius:13px;animation:slideIn .45s var(--ease) both;animation-delay:calc(var(--i,0)*70ms + .2s);transition:background .2s,border-color .2s, box-shadow .2s}
+.news-item:hover{background:var(--surface-2);border-color:color-mix(in srgb,var(--cc) 40%,transparent);box-shadow:0 0 18px color-mix(in srgb,var(--cc) 18%,transparent)}
+.news-item .txt{flex:1;min-width:0;font-size:14px;line-height:1.45}
+.news-item .txt b{font-weight:700}
+.news-item .t{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+code{font:700 12.5px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent-text);background:var(--accent-soft);padding:1px 6px;border-radius:6px;border:1px dashed color-mix(in srgb,var(--accent) 50%,transparent);white-space:nowrap}
+.news-sum{margin:6px 8px 4px;padding:12px 14px;border-radius:14px;background:var(--accent-soft);font-size:13.5px;line-height:1.45}
+.news-sum b{color:var(--accent-text)}
+
+/* ---------- Rechner ---------- */
+.calc{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:20px;max-width:1240px;width:100%;margin:0 auto;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);position:relative;animation:rise .5s var(--ease) both;animation-delay:calc(var(--i,0)*80ms)}
+.panel-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+.panel-head h3{margin:0;font:800 19px var(--display);letter-spacing:-.01em}
+.panel-head small{display:block;color:var(--muted);font-size:13px;margin-top:1px}
+.panel-body{padding:18px 20px 20px}
+.col{display:flex;flex-direction:column;gap:20px;min-width:0}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fields .wide{grid-column:1/-1}
+.fld{display:flex;flex-direction:column;gap:6px;position:relative;min-width:0}
+.fld > span{font-weight:700;font-size:13px;display:flex;align-items:center;gap:6px}
+.fld > span i{font-style:normal;color:var(--accent-text)}
+.fld > span em{font-style:normal;color:var(--muted);font-weight:500;font-size:12px;margin-left:auto}
+.inp{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface-2);color:var(--ink);font:inherit;font-size:16px;transition:border-color .2s, box-shadow .2s;-webkit-appearance:none;appearance:none}
+.inp::placeholder{color:var(--muted)}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft),0 0 18px var(--glow)}
+select.inp{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 18px) 52%,calc(100% - 13px) 52%;background-size:5px 5px;background-repeat:no-repeat;padding-right:34px;cursor:pointer}
+.divider{grid-column:1/-1;display:flex;align-items:center;gap:10px;font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:4px}
+.divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.note{color:var(--muted);font-size:12.5px;margin:14px 0 0}
+.sug{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg),0 0 30px var(--glow);padding:6px;max-height:280px;overflow:auto;z-index:8;animation:dropIn .2s var(--ease)}
+.sug button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:11px;animation:rise .3s var(--ease) both;animation-delay:calc(min(var(--i,0),10)*25ms)}
+.sug button:hover,.sug button.hl{background:var(--surface-2)}
+.sug .sw{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.25)}
+.sug b{flex:1;font-size:14px;font-weight:650}
+.sug small{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.sug .none{padding:14px 10px;color:var(--muted);font-size:14px;text-align:center}
+
+/* Szene */
+.stage{position:relative;overflow:hidden;padding:8px 14px 4px}
+.stage .grid-bg{opacity:.35}
+.scene{position:relative;z-index:1;width:100%;height:auto;display:block;max-height:340px}
+.scene .lbl{font:600 8.5px var(--body);fill:var(--muted)}
+.speed{position:absolute;z-index:2;top:12px;right:14px;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted);background:color-mix(in srgb,var(--surface-2) 85%,transparent);border:1px solid var(--line);border-radius:20px;padding:4px 10px}
+.speed i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:blink 1s ease-in-out infinite}
 .flutes{animation:fl var(--spd,.6s) linear infinite}@keyframes fl{to{transform:translateY(-12px)}}
 .rot{animation:rt var(--spd,.6s) linear infinite}@keyframes rt{to{transform:translateY(10px)}}
 .feedX{animation:fx 4s ease-in-out infinite alternate}@keyframes fx{from{transform:translate(70px,0)}to{transform:translate(230px,0)}}
 .plunge{animation:pl 3s ease-in-out infinite alternate}@keyframes pl{from{transform:translate(150px,-28px)}to{transform:translate(150px,8px)}}
 .feedT{animation:ft 5s ease-in-out infinite alternate}@keyframes ft{from{transform:translate(255px,0)}to{transform:translate(125px,0)}}
-.chips circle{opacity:0;animation:ch .7s ease-out infinite}
+.schips circle{opacity:0;animation:ch .7s ease-out infinite}
 @keyframes ch{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}}
-</style></head><body class="dark">
+
+/* Ergebnisse */
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{position:relative;overflow:hidden;background:var(--surface-2);border:1px solid var(--line);border-radius:16px;padding:14px 16px;animation:rise .4s var(--ease) both;animation-delay:calc(var(--i,0)*60ms);transition:border-color .25s, box-shadow .25s}
+.stat:hover{border-color:color-mix(in srgb,var(--accent) 50%,transparent);box-shadow:0 0 18px var(--glow)}
+.stat small{display:block;color:var(--muted);font-size:12.5px;font-weight:600}
+.stat b{display:block;font:800 28px/1.15 var(--display);letter-spacing:-.02em;color:var(--accent-text);text-shadow:0 0 18px var(--glow);margin-top:4px;font-variant-numeric:tabular-nums}
+.stat span{color:var(--muted);font-size:12.5px;font-weight:600}
+.stat.main{background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 22%,var(--surface-2)),var(--surface-2));border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.stat.main::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent-2),transparent)}
+.stat b.bump{animation:bump .35s var(--ease)}
+.empty{grid-column:1/-1;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:16px;animation:rise .35s var(--ease)}
+.empty.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent);background:color-mix(in srgb,var(--warn) 8%,transparent)}
+.empty svg{width:20px;height:20px}
+.formula{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px}
+
+/* Passungen */
+.fitkind{display:inline-flex;align-items:center;gap:8px;font:800 15px var(--display);padding:6px 14px 6px 8px;border-radius:30px;background:color-mix(in srgb,var(--fc) 15%,transparent);color:var(--fc);border:1px solid color-mix(in srgb,var(--fc) 45%,transparent);box-shadow:0 0 16px color-mix(in srgb,var(--fc) 25%,transparent);margin-bottom:14px;animation:pop .4s var(--ease)}
+.fitkind i{width:9px;height:9px;border-radius:50%;background:var(--fc);box-shadow:0 0 8px var(--fc)}
+.sub-h{font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:18px 0 10px}
+.sub-h:first-child{margin-top:0}
+.tolviz{width:100%;max-width:460px;height:auto;display:block;margin:0 auto}
+.tolviz text{font:600 11px var(--body);fill:var(--muted)}
+.tolviz .zl{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:5 4;opacity:.6}
+.tolviz rect{animation:grow .6s var(--ease) both;transform-box:fill-box;transform-origin:center}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.quick button{border:1px solid var(--line);background:var(--surface-2);border-radius:20px;padding:4px 11px;font-size:12.5px;font-weight:700;color:var(--muted);transition:color .2s,border-color .2s,box-shadow .2s}
+.quick button:hover{color:var(--accent-text);border-color:var(--accent);box-shadow:0 0 12px var(--glow)}
+
+.foot{text-align:center;color:var(--muted);font-size:12.5px;padding:6px 16px 22px}
+
+/* ---------- Einstellungen ---------- */
+.scrim{position:fixed;inset:0;background:rgba(5,7,12,.5);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s ease;z-index:40}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(380px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 60px rgba(0,0,0,.35), -2px 0 30px var(--glow);z-index:41;transform:translateX(105%);transition:transform .42s var(--ease);display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+.drawer.open{transform:none}
+.drawer-head{display:flex;align-items:center;gap:12px;padding:20px 22px 12px}
+.drawer-head h2{margin:0;font:800 21px var(--display);letter-spacing:-.02em}
+.drawer-head .icon-btn{margin-left:auto;width:36px;height:36px}
+.drawer-body{overflow:auto;padding:4px 22px 24px;display:flex;flex-direction:column;gap:26px}
+.set h3{margin:0 0 10px;font:700 11.5px var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mode{border:1.5px solid var(--line);background:var(--surface-2);border-radius:14px;padding:10px 6px 9px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13px;font-weight:650;transition:border-color .2s, box-shadow .2s}
+.mode .pv{width:100%;height:46px;border-radius:9px;border:1px solid var(--line);position:relative;overflow:hidden}
+.mode .pv i{position:absolute;left:8px;right:22px;height:6px;border-radius:3px}
+.mode .pv i:nth-child(1){top:10px;background:var(--accent)}
+.mode .pv i:nth-child(2){top:22px;right:34px;opacity:.5}
+.mode .pv i:nth-child(3){top:32px;right:44px;opacity:.35}
+.pv.dark{background:#0b0d12} .pv.dark i:not(:first-child){background:#eef1f7}
+.pv.light{background:#f2f3f8} .pv.light i:not(:first-child){background:#141720}
+.pv.sys{background:linear-gradient(135deg,#f2f3f8 50%,#0b0d12 50%)} .pv.sys i:not(:first-child){background:#888}
+.mode.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft), 0 0 18px var(--glow)}
+.swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.swb{border:1.5px solid var(--line);background:var(--surface-2);border-radius:14px;padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;font-weight:650;color:var(--muted);transition:border-color .2s, box-shadow .2s, transform .2s}
+.swb:hover{transform:translateY(-2px)}
+.swb .dotc{width:26px;height:26px;border-radius:50%;background:var(--c);box-shadow:0 0 14px color-mix(in srgb,var(--c) 70%,transparent)}
+.swb.on{border-color:var(--c);color:var(--ink);box-shadow:0 0 16px color-mix(in srgb,var(--c) 40%,transparent)}
+.custom{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 12px;border:1.5px dashed var(--line);border-radius:14px;font-size:14px;font-weight:600;cursor:pointer}
+.custom input{width:34px;height:34px;border:0;padding:0;background:none;border-radius:50%;cursor:pointer}
+.custom input::-webkit-color-swatch-wrapper{padding:0}
+.custom input::-webkit-color-swatch{border:2px solid var(--line);border-radius:50%}
+.custom span{color:var(--muted);font-size:12.5px;margin-left:auto;font-family:ui-monospace,Menlo,monospace}
+.toggle{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.toggle:last-child{border-bottom:0}
+.toggle div{flex:1}
+.toggle b{display:block;font-size:14.5px}
+.toggle small{color:var(--muted);font-size:12.5px}
+.switch{width:46px;height:27px;border-radius:20px;border:0;background:var(--surface-2);position:relative;box-shadow:inset 0 0 0 1px var(--line);transition:background .25s, box-shadow .25s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .25s var(--ease)}
+.switch[aria-checked="true"]{background:var(--accent);box-shadow:0 0 14px var(--glow)}
+.switch[aria-checked="true"]::after{transform:translateX(19px)}
+.link{border:0;background:none;color:var(--accent-text);font-weight:700;font-size:14px;padding:6px;display:inline-flex;align-items:center;gap:6px;align-self:flex-start}
+.link:hover{text-shadow:0 0 14px var(--glow)}
+
+/* ---------- Fräser-Übergang ---------- */
+.tx{position:fixed;inset:0;z-index:60;display:grid;place-items:center;pointer-events:none;visibility:hidden;opacity:0}
+.tx.run{visibility:visible;animation:txFade .95s ease forwards;pointer-events:auto}
+.tx::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.tx-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:30px}
+.tx-tool{position:relative;width:170px;height:170px;display:grid;place-items:center}
+.tx-tool::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:radial-gradient(circle,var(--glow) 0%,transparent 70%);filter:blur(4px)}
+.tx-tool::after{content:"";position:absolute;inset:-16px;border-radius:50%;background:conic-gradient(from 0deg,var(--accent),var(--accent-2),transparent 45%,var(--accent-2),var(--accent));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));filter:drop-shadow(0 0 8px var(--glow))}
+.tx.run .tx-tool{animation:toolMove .95s var(--ease) forwards}
+.tx.run .tx-tool::after{animation:spin .9s linear infinite}
+.tx-tool .cutter{position:relative;width:150px;height:150px;filter:drop-shadow(0 10px 24px rgba(0,0,0,.4))}
+.tx.run .tx-tool .cutter{animation:cutSpin .95s cubic-bezier(.3,0,.3,1) forwards}
+.spark{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:2px;background:var(--accent-2);box-shadow:0 0 12px var(--accent-2);opacity:0;z-index:6}
+.tx.run .spark{animation:spark .95s ease-out forwards}
+.tx-label{font:800 24px var(--display);letter-spacing:-.01em;color:var(--ink);text-shadow:0 0 20px var(--glow);opacity:0}
+.tx.run .tx-label{animation:txLabel .95s var(--ease) forwards}
+
+/* ---------- Animationen ---------- */
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 36px var(--glow),0 0 90px var(--glow-2),inset 0 2px 20px rgba(255,255,255,.25)}50%{box-shadow:0 0 56px var(--glow),0 0 130px var(--glow-2),inset 0 2px 20px rgba(255,255,255,.25)}}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(60px,40px) scale(1.15)}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes viewIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:.4;transform:scale(.9) translateY(14px)}60%{opacity:1;transform:scale(1.03) translateY(-3px)}100%{opacity:1;transform:none}}
+@keyframes dropIn{from{opacity:0;transform:scale(.94) translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes bump{0%{transform:none}40%{transform:scale(1.08);text-shadow:0 0 28px var(--glow)}100%{transform:none}}
+@keyframes grow{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
+@keyframes txFade{0%{opacity:0}14%{opacity:1}74%{opacity:1}100%{opacity:0}}
+@keyframes toolMove{0%{transform:scale(.35)}20%{transform:scale(1.1)}32%{transform:scale(.97)}44%{transform:scale(1.02)}80%{transform:scale(1)}100%{transform:scale(1.45) translateY(-14px)}}
+@keyframes cutSpin{from{transform:rotate(-200deg)}to{transform:rotate(900deg)}}
+@keyframes txLabel{0%,40%{opacity:0;transform:translateY(10px)}58%,80%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
+@keyframes spark{0%,25%{opacity:0;transform:translate(0,0) scale(.4) rotate(0)}45%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1) rotate(160deg)}}
+
+body.no-motion *, body.no-motion *::before, body.no-motion *::after{animation:none !important;transition:none !important}
+@media (prefers-reduced-motion:reduce){ *, *::before, *::after{animation:none !important;transition:none !important} }
+
+/* ---------- Schmale Fenster ---------- */
+@media (max-width:1020px){
+  .home{grid-template-columns:minmax(0,1fr)}
+  .calc{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:860px){
+  .top{flex-wrap:wrap;row-gap:10px}
+  .seg{order:3;width:100%;margin:0;overflow-x:auto;scrollbar-width:none}
+  .seg::-webkit-scrollbar{display:none}
+  .seg button{flex:1;justify-content:center;padding:7px 10px}
+}
+@media (max-width:520px){
+  .seg button svg{display:none}
+  .hero{min-height:440px;padding:32px 16px}
+  .go{width:170px;height:170px}
+  .go .cutter{width:80px;height:80px}
+  .fields{grid-template-columns:1fr}
+  .panel-head,.panel-body{padding-left:16px;padding-right:16px}
+  .stat b{font-size:24px}
+}
+</style>
+</head>
+<body>
+
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<linearGradient id="shH" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
-<linearGradient id="shV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
-<clipPath id="cF"><rect x="-15" y="28" width="30" height="82" rx="3"/></clipPath>
-<clipPath id="cB"><path d="M-11 28 H11 V96 L0 112 L-11 96Z"/></clipPath>
-<clipPath id="cD"><rect x="58" y="58" width="222" height="58" rx="5"/></clipPath></defs></svg>
-<div id="shade" onclick="tog()"></div>
-<nav id="menu">
-<h3>Bereiche</h3>
-<button class="nav" data-p="fraesen">🌀 Fräsen</button>
-<button class="nav" data-p="bohren">🔩 Bohren</button>
-<button class="nav" data-p="drehen">⚙️ Drehen</button>
-<button class="nav" data-p="passung">📏 Passungen</button>
-<div class="settings"><h3>Einstellungen</h3>
-<label>Dunkelmodus <input type="checkbox" id="dark" style="width:auto"></label>
-<label>Animationen <input type="checkbox" id="anim" checked style="width:auto"></label></div>
-</nav>
-<header><button id="burger" onclick="tog()" aria-label="Menü"><span></span><span></span><span></span></button><h1 id="title">Zerspanungsrechner</h1><button id="helpBtn" aria-label="Hilfe">?</button></header>
-<div id="helpBox"></div>
-<div id="intro"><div class="cw"><svg class="cutter" viewBox="0 0 100 100"><defs><radialGradient id="g" cx="40%" cy="35%"><stop offset="0" stop-color="#eef"/><stop offset="1" stop-color="#778"/></radialGradient></defs>
-<circle cx="50" cy="50" r="44" fill="url(#g)"/><g fill="#445">
-<path d="M50 6 L60 30 L50 28Z"/><path d="M94 50 L70 60 L72 50Z"/><path d="M50 94 L40 70 L50 72Z"/><path d="M6 50 L30 40 L28 50Z"/></g>
-<circle cx="50" cy="50" r="14" fill="#334"/><circle cx="50" cy="50" r="6" fill="#aab"/></svg></div><h2 id="introT"></h2></div>
-<main>
-<section class="page on" id="p-start"><div class="card"><h2>Willkommen 👋</h2><p>Öffne oben links das Menü und wähle einen Bereich.</p></div></section>
+  <linearGradient id="shH" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
+  <linearGradient id="shV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".4" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient>
+  <radialGradient id="steel" cx="38%" cy="32%"><stop offset="0" stop-color="#f4f6fb"/><stop offset=".55" stop-color="#a9b0bd"/><stop offset="1" stop-color="#5d6470"/></radialGradient>
+  <clipPath id="cF"><rect x="-15" y="28" width="30" height="82" rx="3"/></clipPath>
+  <clipPath id="cB"><path d="M-11 28 H11 V96 L0 112 L-11 96Z"/></clipPath>
+  <clipPath id="cD"><rect x="58" y="58" width="222" height="58" rx="5"/></clipPath>
+  <symbol id="cutterTop" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="url(#steel)"/>
+    <g fill="#2a2f3a"><path d="M50 4 L62 30 L50 27Z"/><path d="M96 50 L70 62 L73 50Z"/><path d="M50 96 L38 70 L50 73Z"/><path d="M4 50 L30 38 L27 50Z"/></g>
+    <g fill="#fff" opacity=".55"><path d="M50 4 L54 28 L50 27Z"/><path d="M96 50 L72 54 L73 50Z"/><path d="M50 96 L46 72 L50 73Z"/><path d="M4 50 L28 46 L27 50Z"/></g>
+    <circle cx="50" cy="50" r="15" fill="#2a2f3a"/><circle cx="50" cy="50" r="15" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="1.5"/>
+    <circle cx="50" cy="50" r="6" fill="#c9ced8"/>
+  </symbol>
+</defs></svg>
 
-<section class="page" id="p-fraesen"><div class="card"><h2>Fräsen</h2>
-<div class="row"><label class="f"><span>Fräserdurchmesser D (mm) *</span><input id="fD" type="number" inputmode="decimal"></label>
-<label class="f"><span>Zähnezahl z *</span><input id="fz" type="number" inputmode="numeric"></label></div>
-<label class="f"><span>Vorschub je Zahn fz (mm) *</span><input id="ffz" type="number" inputmode="decimal" step="0.01"></label>
-<div class="row"><div class="f"><span>Werkstoff</span><input class="mat" data-k="f" placeholder="z. B. Alu, C45 …"><div class="sug"></div></div>
-<label class="f"><span>Schneidstoff</span><select class="cut" data-k="f"></select></label></div>
-<div class="row"><label class="f"><span>vc manuell (optional)</span><input id="fvc" type="number" placeholder="leer = Werkstoff"></label>
-<label class="f"><span>Drehzahl manuell (optional)</span><input id="fn" type="number" placeholder="leer = berechnet"></label></div>
-<p class="hint">* Pflichtfelder. Leere Felder oder 0 werden ignoriert.</p></div>
-<div class="card stage"><svg class="scene" id="s-f" viewBox="0 0 300 175">
-<rect class="wp" x="20" y="108" width="260" height="48" rx="4"/><rect x="20" y="108" width="260" height="48" rx="4" fill="url(#shV)"/>
-<rect x="20" y="108" width="260" height="6" fill="#0003"/>
-<g class="feedX" transform="translate(150 0)">
- <rect x="-7" y="0" width="14" height="30" fill="#8b9097"/><rect x="-7" y="0" width="14" height="30" fill="url(#shH)"/>
- <g clip-path="url(#cF)"><rect class="tl" x="-15" y="28" width="30" height="82"/><g class="flutes"></g></g>
- <rect x="-15" y="28" width="30" height="82" rx="3" fill="url(#shH)"/>
- <g class="chips"><circle cx="14" cy="108" r="2.4" style="--dx:22px;--dy:-26px"/><circle cx="-14" cy="108" r="2" style="--dx:-24px;--dy:-18px;animation-delay:.2s"/><circle cx="12" cy="106" r="1.8" style="--dx:30px;--dy:-10px;animation-delay:.35s"/><circle cx="-12" cy="106" r="2.2" style="--dx:-16px;--dy:-30px;animation-delay:.5s"/></g>
-</g>
-<text class="lbl" x="150" y="170" text-anchor="middle"></text></svg></div>
-<div class="card res" id="fRes"></div></section>
+<header class="top gutter">
+  <button class="brand" id="brand" type="button" aria-label="Zur Startseite">
+    <span class="logo"><svg class="i" viewBox="0 0 24 24"><path d="M9 2h6v6H9z"/><path d="M8 8h8v9l-4 4-4-4z"/><path d="m8 12 8-2M8 16l8-2"/></svg></span>
+    <span class="bt">Zerspanungsrechner</span>
+  </button>
+  <nav class="seg" id="seg" aria-label="Bereiche"></nav>
+  <div class="tools">
+    <button class="icon-btn" id="helpBtn" type="button" aria-label="Hilfe" aria-expanded="false">
+      <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/></svg>
+    </button>
+    <button class="icon-btn" id="gearBtn" type="button" aria-label="Einstellungen">
+      <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
+    <div class="drop" id="helpBox" role="dialog" aria-label="Hilfe" hidden></div>
+  </div>
+</header>
 
-<section class="page" id="p-bohren"><div class="card"><h2>Bohren</h2>
-<div class="row"><label class="f"><span>Bohrerdurchmesser D (mm) *</span><input id="bD" type="number"></label>
-<label class="f"><span>Vorschub f (mm/U) *</span><input id="bf" type="number" step="0.01"></label></div>
-<div class="row"><div class="f"><span>Werkstoff</span><input class="mat" data-k="b" placeholder="z. B. Edelstahl"><div class="sug"></div></div>
-<label class="f"><span>Schneidstoff</span><select class="cut" data-k="b"></select></label></div>
-<div class="row"><label class="f"><span>vc manuell (optional)</span><input id="bvc" type="number"></label>
-<label class="f"><span>Drehzahl manuell (optional)</span><input id="bn" type="number"></label></div>
-<p class="hint">Bohren: vc ca. 70 % vom Fräswert angesetzt.</p></div>
-<div class="card stage"><svg class="scene" id="s-b" viewBox="0 0 300 175">
-<rect class="wp" x="55" y="100" width="190" height="56" rx="4"/><rect x="55" y="100" width="190" height="56" rx="4" fill="url(#shV)"/>
-<rect x="138" y="100" width="24" height="40" fill="#0006"/>
-<g class="plunge" transform="translate(150 -10)">
- <rect x="-6" y="-10" width="12" height="40" fill="#8b9097"/><rect x="-6" y="-10" width="12" height="40" fill="url(#shH)"/>
- <g clip-path="url(#cB)"><rect class="tl" x="-12" y="28" width="24" height="86"/><g class="flutes"></g></g>
- <path d="M-11 28 H11 V96 L0 112 L-11 96Z" fill="url(#shH)"/>
- <g class="chips"><circle cx="-13" cy="100" r="2.2" style="--dx:-26px;--dy:-14px"/><circle cx="13" cy="100" r="2" style="--dx:24px;--dy:-20px;animation-delay:.25s"/><circle cx="-12" cy="98" r="1.7" style="--dx:-14px;--dy:-30px;animation-delay:.45s"/></g>
-</g>
-<text class="lbl" x="150" y="170" text-anchor="middle"></text></svg></div>
-<div class="card res" id="bRes"></div></section>
+<main class="gutter">
 
-<section class="page" id="p-drehen"><div class="card"><h2>Drehen</h2>
-<div class="row"><label class="f"><span>Werkstückdurchmesser D (mm) *</span><input id="dD" type="number"></label>
-<label class="f"><span>Vorschub f (mm/U) *</span><input id="df" type="number" step="0.01"></label></div>
-<div class="row"><div class="f"><span>Werkstoff</span><input class="mat" data-k="d" placeholder="z. B. Messing"><div class="sug"></div></div>
-<label class="f"><span>Schneidstoff</span><select class="cut" data-k="d"></select></label></div>
-<div class="row"><label class="f"><span>vc manuell (optional)</span><input id="dvc" type="number"></label>
-<label class="f"><span>Drehzahl manuell (optional)</span><input id="dn" type="number"></label></div></div>
-<div class="card stage"><svg class="scene" id="s-d" viewBox="0 0 300 175">
-<rect x="10" y="30" width="44" height="114" rx="6" fill="#6b7078"/><rect x="10" y="30" width="44" height="114" rx="6" fill="url(#shV)"/>
-<rect x="40" y="46" width="22" height="14" rx="2" fill="#4c5157"/><rect x="40" y="114" width="22" height="14" rx="2" fill="#4c5157"/>
-<g clip-path="url(#cD)"><rect class="wp" x="58" y="58" width="222" height="58"/><g class="rot"></g><rect x="58" y="58" width="222" height="58" fill="url(#shV)"/></g>
-<g class="feedT" transform="translate(200 0)">
- <rect x="-4" y="132" width="40" height="16" rx="2" fill="#5d6269"/><rect x="-4" y="132" width="40" height="16" rx="2" fill="url(#shV)"/>
- <path class="tl" d="M0 116 L16 134 L-10 134Z"/><path d="M0 116 L16 134 L-10 134Z" fill="url(#shH)"/>
- <g class="chips"><circle cx="2" cy="118" r="2.2" style="--dx:18px;--dy:22px"/><circle cx="4" cy="117" r="1.8" style="--dx:30px;--dy:10px;animation-delay:.2s"/><circle cx="0" cy="118" r="2" style="--dx:12px;--dy:32px;animation-delay:.4s"/></g>
-</g>
-<text class="lbl" x="150" y="170" text-anchor="middle"></text></svg></div>
-<div class="card res" id="dRes"></div></section>
+<!-- ===== Startseite ===== -->
+<section class="view" id="v-home">
+  <div class="home">
+    <div class="hero">
+      <span class="orb a"></span><span class="orb b"></span><span class="grid-bg"></span>
+      <div>
+        <p class="greet" id="greet">Hallo!</p>
+        <h1>Schnittdaten in <em>Sekunden</em>,<br>direkt an der Maschine.</h1>
+      </div>
+      <button class="go" id="goBtn" type="button" aria-label="Fräsrechner öffnen">
+        <svg class="cutter" viewBox="0 0 100 100"><use href="#cutterTop"/></svg>
+        <b>Loslegen</b>
+      </button>
+      <div class="chips" id="chips"></div>
+    </div>
+    <aside class="news">
+      <div class="news-head"><span class="live"></span><h2>Kurz &amp; knapp</h2></div>
+      <div class="news-body" id="facts"></div>
+    </aside>
+  </div>
+</section>
 
-<section class="page" id="p-passung"><div class="card"><h2>Passungen (ISO 286)</h2>
-<div class="row"><label class="f"><span>Nennmaß (mm)</span><input id="pM" type="number" placeholder="z. B. 5"></label>
-<label class="f"><span>Toleranz</span><input id="pT" placeholder="z. B. H7, h6, g6"></label></div>
-<p class="hint">Unterstützt: H, h, JS, js, G, g, F, f mit IT5–IT11, bis 500 mm. Großbuchstabe = Bohrung, klein = Welle.</p></div>
-<div class="card" id="pRes"></div></section>
+<!-- ===== Fräsen ===== -->
+<section class="view" id="v-fraesen" hidden>
+  <div class="calc">
+    <div class="panel" style="--i:0">
+      <div class="panel-head"><span class="ci lg" style="--cc:#4d7cff" data-icon="fraesen"></span><div><h3>Fräsen</h3><small>Drehzahl &amp; Vorschub aus Fräserdaten</small></div></div>
+      <div class="panel-body">
+        <div class="fields">
+          <label class="fld"><span>Fräser-Ø D <i>*</i><em>mm</em></span><input class="inp" id="fD" type="number" inputmode="decimal" placeholder="z. B. 10"></label>
+          <label class="fld"><span>Zähnezahl z <i>*</i></span><input class="inp" id="fz" type="number" inputmode="numeric" placeholder="z. B. 4"></label>
+          <label class="fld wide"><span>Vorschub je Zahn fz <i>*</i><em>mm</em></span><input class="inp" id="ffz" type="number" inputmode="decimal" step="0.01" placeholder="z. B. 0,05"></label>
+          <div class="divider">Schnittgeschwindigkeit</div>
+          <div class="fld"><span>Werkstoff</span><input class="inp mat" data-k="f" placeholder="Suchen: Alu, C45 …" autocomplete="off"></div>
+          <label class="fld"><span>Schneidstoff</span><select class="inp cut" data-k="f"></select></label>
+          <label class="fld"><span>vc manuell<em>m/min</em></span><input class="inp" id="fvc" type="number" inputmode="decimal" placeholder="leer = Werkstoff"></label>
+          <label class="fld"><span>Drehzahl manuell<em>1/min</em></span><input class="inp" id="fn" type="number" inputmode="numeric" placeholder="leer = berechnet"></label>
+        </div>
+        <p class="note">* Pflichtfelder. Leere Felder oder 0 werden einfach ignoriert.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel stage" style="--i:1"><span class="grid-bg"></span><span class="speed"><i></i><span id="spd-f">–</span></span>
+        <svg class="scene" id="s-f" viewBox="0 0 300 175">
+          <rect class="wp" x="20" y="108" width="260" height="48" rx="4"/><rect x="20" y="108" width="260" height="48" rx="4" fill="url(#shV)"/>
+          <rect x="20" y="108" width="260" height="6" fill="#0003"/>
+          <g class="feedX" transform="translate(150 0)">
+            <rect x="-7" y="0" width="14" height="30" fill="#8b9097"/><rect x="-7" y="0" width="14" height="30" fill="url(#shH)"/>
+            <g clip-path="url(#cF)"><rect class="tl" x="-15" y="28" width="30" height="82"/><g class="flutes"></g></g>
+            <rect x="-15" y="28" width="30" height="82" rx="3" fill="url(#shH)"/>
+            <g class="schips"><circle cx="14" cy="108" r="2.4" style="--dx:22px;--dy:-26px"/><circle cx="-14" cy="108" r="2" style="--dx:-24px;--dy:-18px;animation-delay:.2s"/><circle cx="12" cy="106" r="1.8" style="--dx:30px;--dy:-10px;animation-delay:.35s"/><circle cx="-12" cy="106" r="2.2" style="--dx:-16px;--dy:-30px;animation-delay:.5s"/></g>
+          </g>
+          <text class="lbl" x="150" y="170" text-anchor="middle"></text>
+        </svg>
+      </div>
+      <div class="panel" style="--i:2"><div class="panel-body"><div class="res" id="fRes"></div>
+        <div class="formula"><code>n = vc·1000 / (π·D)</code><code>vf = n·z·fz</code></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Bohren ===== -->
+<section class="view" id="v-bohren" hidden>
+  <div class="calc">
+    <div class="panel" style="--i:0">
+      <div class="panel-head"><span class="ci lg" style="--cc:#1fe08a" data-icon="bohren"></span><div><h3>Bohren</h3><small>Drehzahl &amp; Vorschub für Spiralbohrer</small></div></div>
+      <div class="panel-body">
+        <div class="fields">
+          <label class="fld"><span>Bohrer-Ø D <i>*</i><em>mm</em></span><input class="inp" id="bD" type="number" inputmode="decimal" placeholder="z. B. 8"></label>
+          <label class="fld"><span>Vorschub f <i>*</i><em>mm/U</em></span><input class="inp" id="bf" type="number" inputmode="decimal" step="0.01" placeholder="z. B. 0,15"></label>
+          <div class="divider">Schnittgeschwindigkeit</div>
+          <div class="fld"><span>Werkstoff</span><input class="inp mat" data-k="b" placeholder="Suchen: Edelstahl …" autocomplete="off"></div>
+          <label class="fld"><span>Schneidstoff</span><select class="inp cut" data-k="b"></select></label>
+          <label class="fld"><span>vc manuell<em>m/min</em></span><input class="inp" id="bvc" type="number" inputmode="decimal" placeholder="leer = Werkstoff"></label>
+          <label class="fld"><span>Drehzahl manuell<em>1/min</em></span><input class="inp" id="bn" type="number" inputmode="numeric" placeholder="leer = berechnet"></label>
+        </div>
+        <p class="note">Beim Bohren wird vc mit ca. 70 % vom Fräswert angesetzt.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel stage" style="--i:1"><span class="grid-bg"></span><span class="speed"><i></i><span id="spd-b">–</span></span>
+        <svg class="scene" id="s-b" viewBox="0 0 300 175">
+          <rect class="wp" x="55" y="100" width="190" height="56" rx="4"/><rect x="55" y="100" width="190" height="56" rx="4" fill="url(#shV)"/>
+          <rect x="138" y="100" width="24" height="40" fill="#0006"/>
+          <g class="plunge" transform="translate(150 -10)">
+            <rect x="-6" y="-10" width="12" height="40" fill="#8b9097"/><rect x="-6" y="-10" width="12" height="40" fill="url(#shH)"/>
+            <g clip-path="url(#cB)"><rect class="tl" x="-12" y="28" width="24" height="86"/><g class="flutes"></g></g>
+            <path d="M-11 28 H11 V96 L0 112 L-11 96Z" fill="url(#shH)"/>
+            <g class="schips"><circle cx="-13" cy="100" r="2.2" style="--dx:-26px;--dy:-14px"/><circle cx="13" cy="100" r="2" style="--dx:24px;--dy:-20px;animation-delay:.25s"/><circle cx="-12" cy="98" r="1.7" style="--dx:-14px;--dy:-30px;animation-delay:.45s"/></g>
+          </g>
+          <text class="lbl" x="150" y="170" text-anchor="middle"></text>
+        </svg>
+      </div>
+      <div class="panel" style="--i:2"><div class="panel-body"><div class="res" id="bRes"></div>
+        <div class="formula"><code>n = vc·1000 / (π·D)</code><code>vf = n·f</code></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Drehen ===== -->
+<section class="view" id="v-drehen" hidden>
+  <div class="calc">
+    <div class="panel" style="--i:0">
+      <div class="panel-head"><span class="ci lg" style="--cc:#ff7a1a" data-icon="drehen"></span><div><h3>Drehen</h3><small>Drehzahl &amp; Vorschub am Werkstück</small></div></div>
+      <div class="panel-body">
+        <div class="fields">
+          <label class="fld"><span>Werkstück-Ø D <i>*</i><em>mm</em></span><input class="inp" id="dD" type="number" inputmode="decimal" placeholder="z. B. 40"></label>
+          <label class="fld"><span>Vorschub f <i>*</i><em>mm/U</em></span><input class="inp" id="df" type="number" inputmode="decimal" step="0.01" placeholder="z. B. 0,2"></label>
+          <div class="divider">Schnittgeschwindigkeit</div>
+          <div class="fld"><span>Werkstoff</span><input class="inp mat" data-k="d" placeholder="Suchen: Messing …" autocomplete="off"></div>
+          <label class="fld"><span>Schneidstoff</span><select class="inp cut" data-k="d"></select></label>
+          <label class="fld"><span>vc manuell<em>m/min</em></span><input class="inp" id="dvc" type="number" inputmode="decimal" placeholder="leer = Werkstoff"></label>
+          <label class="fld"><span>Drehzahl manuell<em>1/min</em></span><input class="inp" id="dn" type="number" inputmode="numeric" placeholder="leer = berechnet"></label>
+        </div>
+        <p class="note">Beim Drehen wird vc mit ca. 130 % vom Fräswert angesetzt.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel stage" style="--i:1"><span class="grid-bg"></span><span class="speed"><i></i><span id="spd-d">–</span></span>
+        <svg class="scene" id="s-d" viewBox="0 0 300 175">
+          <rect x="10" y="30" width="44" height="114" rx="6" fill="#6b7078"/><rect x="10" y="30" width="44" height="114" rx="6" fill="url(#shV)"/>
+          <rect x="40" y="46" width="22" height="14" rx="2" fill="#4c5157"/><rect x="40" y="114" width="22" height="14" rx="2" fill="#4c5157"/>
+          <g clip-path="url(#cD)"><rect class="wp" x="58" y="58" width="222" height="58"/><g class="rot"></g><rect x="58" y="58" width="222" height="58" fill="url(#shV)"/></g>
+          <g class="feedT" transform="translate(200 0)">
+            <rect x="-4" y="132" width="40" height="16" rx="2" fill="#5d6269"/><rect x="-4" y="132" width="40" height="16" rx="2" fill="url(#shV)"/>
+            <path class="tl" d="M0 116 L16 134 L-10 134Z"/><path d="M0 116 L16 134 L-10 134Z" fill="url(#shH)"/>
+            <g class="schips"><circle cx="2" cy="118" r="2.2" style="--dx:18px;--dy:22px"/><circle cx="4" cy="117" r="1.8" style="--dx:30px;--dy:10px;animation-delay:.2s"/><circle cx="0" cy="118" r="2" style="--dx:12px;--dy:32px;animation-delay:.4s"/></g>
+          </g>
+          <text class="lbl" x="150" y="170" text-anchor="middle"></text>
+        </svg>
+      </div>
+      <div class="panel" style="--i:2"><div class="panel-body"><div class="res" id="dRes"></div>
+        <div class="formula"><code>n = vc·1000 / (π·D)</code><code>vf = n·f</code></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Passungen ===== -->
+<section class="view" id="v-passung" hidden>
+  <div class="calc">
+    <div class="panel" style="--i:0">
+      <div class="panel-head"><span class="ci lg" style="--cc:#9b5cff" data-icon="passung"></span><div><h3>Passungen</h3><small>ISO 286 – Abmaße, Grenzmaße, Passungsart</small></div></div>
+      <div class="panel-body">
+        <div class="fields">
+          <label class="fld"><span>Nennmaß<em>mm</em></span><input class="inp" id="pM" type="number" inputmode="decimal" placeholder="z. B. 5"></label>
+          <label class="fld"><span>Toleranz</span><input class="inp" id="pT" placeholder="H7 oder H7/g6" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+        </div>
+        <div class="quick" id="quick"></div>
+        <p class="note">Großbuchstabe = Bohrung, Kleinbuchstabe = Welle. Mit Schrägstrich (z. B. H7/g6) wird die Passung ausgewertet.</p>
+      </div>
+    </div>
+    <div class="col">
+      <div class="panel" style="--i:1"><div class="panel-body" id="pRes"></div></div>
+    </div>
+  </div>
+</section>
+
+<p class="foot">Kostenlos · alles wird direkt in deinem Browser berechnet · Richtwerte, Herstellerangaben haben Vorrang</p>
 </main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Einstellungen" aria-hidden="true">
+  <div class="drawer-head">
+    <h2>Einstellungen</h2>
+    <button class="icon-btn" id="closeDrawer" type="button" aria-label="Schließen"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <section class="set">
+      <h3>Darstellung</h3>
+      <div class="modes">
+        <button class="mode" type="button" data-mode="dark"><span class="pv dark"><i></i><i></i><i></i></span>Dunkel</button>
+        <button class="mode" type="button" data-mode="light"><span class="pv light"><i></i><i></i><i></i></span>Hell</button>
+        <button class="mode" type="button" data-mode="system"><span class="pv sys"><i></i><i></i><i></i></span>Wie Gerät</button>
+      </div>
+    </section>
+    <section class="set">
+      <h3>Akzentfarbe</h3>
+      <div class="swatches" id="swatches"></div>
+      <label class="custom" for="customColor"><input type="color" id="customColor" value="#4d7cff">Eigene Farbe wählen<span id="customHex">#4D7CFF</span></label>
+    </section>
+    <section class="set">
+      <h3>Effekte</h3>
+      <div class="toggle"><div><b>Neon-Leuchten</b><small>Glow um Knöpfe, Karten und Zahlen</small></div><button class="switch" id="glowSw" type="button" role="switch" aria-checked="true" aria-label="Neon-Leuchten"></button></div>
+      <div class="toggle"><div><b>Fräser-Übergang</b><small>Drehender Fräser beim Wechseln der Bereiche</small></div><button class="switch" id="txSw" type="button" role="switch" aria-checked="true" aria-label="Fräser-Übergang"></button></div>
+      <div class="toggle"><div><b>Animationen</b><small>Bewegung in Grafiken und beim Wechseln</small></div><button class="switch" id="motionSw" type="button" role="switch" aria-checked="true" aria-label="Animationen"></button></div>
+    </section>
+    <button class="link" id="resetSettings" type="button">Auf Standard zurücksetzen</button>
+  </div>
+</aside>
+
+<div class="tx" id="tx" aria-hidden="true">
+  <div class="tx-stage">
+    <div class="tx-tool">
+      <svg class="cutter" viewBox="0 0 100 100"><use href="#cutterTop"/></svg>
+      <span class="spark" style="--x:-100px;--y:-70px"></span><span class="spark" style="--x:105px;--y:-60px;animation-delay:.03s"></span>
+      <span class="spark" style="--x:-80px;--y:60px;animation-delay:.05s"></span><span class="spark" style="--x:90px;--y:70px;animation-delay:.08s"></span>
+      <span class="spark" style="--x:0px;--y:-120px;animation-delay:.02s"></span><span class="spark" style="--x:-125px;--y:0px;animation-delay:.06s"></span>
+      <span class="spark" style="--x:125px;--y:10px;animation-delay:.04s"></span>
+    </div>
+    <div class="tx-label" id="txLabel">Fräsen</div>
+  </div>
+</div>
+
 <script>
+const $ = id => document.getElementById(id);
+
+/* ---------- Bereiche & Symbole ---------- */
+const ICONS = {
+  fraesen:'<path d="M9 2h6v6H9z"/><path d="M8 8h8v9l-4 4-4-4z"/><path d="m8 12 8-2M8 16l8-2"/>',
+  bohren:'<path d="M10 2h4v5h-4z"/><path d="M9 7h6v9l-3 6-3-6z"/><path d="m9 11 6-2M9 15l6-2"/>',
+  drehen:'<rect x="2" y="6" width="4" height="12" rx="1"/><path d="M6 9h15v6H6z"/><path d="M11 9v6M16 9v6"/>',
+  passung:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/>',
+  warn:'<path d="M12 3 2 20h20L12 3z"/><path d="M12 10v4M12 17h.01"/>'
+};
+const svg = k => '<svg class="i" viewBox="0 0 24 24">'+ICONS[k]+'</svg>';
+const AREAS = [
+  {k:'fraesen', name:'Fräsen',    c:'#4d7cff'},
+  {k:'bohren',  name:'Bohren',    c:'#1fe08a'},
+  {k:'drehen',  name:'Drehen',    c:'#ff7a1a'},
+  {k:'passung', name:'Passungen', c:'#9b5cff'},
+];
+const NAMES = {home:'Start'}; AREAS.forEach(a=>NAMES[a.k]=a.name);
+document.querySelectorAll('[data-icon]').forEach(e=>e.innerHTML=svg(e.dataset.icon));
+$('seg').innerHTML = AREAS.map(a=>'<button type="button" data-v="'+a.k+'">'+svg(a.k)+a.name+'</button>').join('');
+$('chips').innerHTML = AREAS.map((a,i)=>'<button class="chip" type="button" data-v="'+a.k+'" style="--cc:'+a.c+';--i:'+i+'"><span class="ci" style="--cc:'+a.c+'">'+svg(a.k)+'</span>'+a.name+'</button>').join('');
+const FACTS = [
+  {day:'Formeln', items:[
+    {k:'fraesen', h:'Drehzahl', t:'<code>n = vc·1000 / (π·D)</code>', s:'Gilt für Fräsen, Bohren und Drehen.'},
+    {k:'fraesen', h:'Vorschub Fräsen', t:'<code>vf = n·z·fz</code>', s:'Zähnezahl mal Vorschub je Zahn mal Drehzahl.'},
+    {k:'drehen',  h:'Vorschub Drehen & Bohren', t:'<code>vf = n·f</code>', s:'f ist der Vorschub pro Umdrehung.'},
+  ]},
+  {day:'Passungen', items:[
+    {k:'passung', h:'H7/g6', t:'Spielpassung', s:'Leicht drehbar oder verschiebbar.'},
+    {k:'passung', h:'H7/k6', t:'Übergangspassung', s:'Mit leichtem Druck fügbar.'},
+    {k:'passung', h:'H7/p6', t:'Presspassung', s:'Nur mit Presse oder Erwärmen fügbar.'},
+  ]}
+];
+let fi = 0;
+$('facts').innerHTML = FACTS.map(g=>'<div class="news-day">'+g.day+'</div>'+g.items.map(it=>{const a=AREAS.find(x=>x.k===it.k);return '<button class="news-item" type="button" data-v="'+it.k+'" style="--cc:'+a.c+';--i:'+(fi++)+'"><span class="ci" style="--cc:'+a.c+'">'+svg(it.k)+'</span><span class="txt"><b>'+it.h+'</b> · '+it.t+'<span class="t">'+it.s+'</span></span></button>'}).join('')).join('')
+  + '<div class="news-sum">Werte sind <b>Richtwerte</b>. Herstellerangaben deines Werkzeugs haben immer Vorrang.</div>';
+const hr = new Date().getHours();
+$('greet').textContent = hr<11 ? 'Guten Morgen 👋' : hr<18 ? 'Hallo 👋' : 'Guten Abend 👋';
+
+/* ---------- Einstellungen ---------- */
+const PRESETS = [
+  {name:'Neon-Blau', c:'#4d7cff'}, {name:'Cyber-Pink', c:'#ff2bd6'}, {name:'Neon-Grün', c:'#1fe08a'}, {name:'Laser-Orange', c:'#ff7a1a'},
+  {name:'Ultraviolett', c:'#9b5cff'}, {name:'Eis-Türkis', c:'#00d0ff'}, {name:'Gold', c:'#ffc23d'}, {name:'Rubin', c:'#ff3b5c'},
+];
+const DEFAULTS = {mode:'dark', accent:'#4d7cff', glow:true, motion:true, tx:true};
+const SKEY = 'zerspanungsrechner.einstellungen';
+let S = {...DEFAULTS};
+try{ S = {...DEFAULTS, ...JSON.parse(localStorage.getItem(SKEY)||'{}')}; }catch(e){}
+function saveSettings(){ try{ localStorage.setItem(SKEY, JSON.stringify(S)); }catch(e){} }
+function hexToRgb(h){ h=h.replace('#',''); if(h.length===3) h=h.split('').map(x=>x+x).join(''); const n=parseInt(h,16); return [n>>16&255, n>>8&255, n&255]; }
+function rgbToHex(r,g,b){ return '#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join(''); }
+function shiftHue(hex, deg){
+  let [r,g,b]=hexToRgb(hex).map(v=>v/255);
+  const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let h=0, s=0; const l=(mx+mn)/2, d=mx-mn;
+  if(d){ s=l>.5? d/(2-mx-mn) : d/(mx+mn); h = mx===r ? (g-b)/d+(g<b?6:0) : mx===g ? (b-r)/d+2 : (r-g)/d+4; h*=60; }
+  h=(h+deg)%360; const c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2;
+  const [R,G,B] = h<60?[c,x,0]:h<120?[x,c,0]:h<180?[0,c,x]:h<240?[0,x,c]:h<300?[x,0,c]:[c,0,x];
+  return rgbToHex((R+m)*255,(G+m)*255,(B+m)*255);
+}
+function luminance(hex){ const [r,g,b]=hexToRgb(hex).map(v=>{v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)}); return .2126*r+.7152*g+.0722*b; }
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+const rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+function applySettings(){
+  const mode = S.mode==='system' ? (mq.matches?'dark':'light') : S.mode;
+  document.body.dataset.mode = mode;
+  const st = document.body.style;
+  st.setProperty('--accent', S.accent);
+  st.setProperty('--accent-2', shiftHue(S.accent, 48));
+  st.setProperty('--accent-ink', luminance(S.accent) > .42 ? '#0b0d12' : '#ffffff');
+  document.body.classList.toggle('no-glow', !S.glow);
+  document.body.classList.toggle('no-motion', !S.motion);
+  document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('on', b.dataset.mode===S.mode));
+  document.querySelectorAll('.swb').forEach(b=>b.classList.toggle('on', b.dataset.c.toLowerCase()===S.accent.toLowerCase()));
+  $('customColor').value = S.accent; $('customHex').textContent = S.accent.toUpperCase();
+  $('glowSw').setAttribute('aria-checked', S.glow); $('motionSw').setAttribute('aria-checked', S.motion); $('txSw').setAttribute('aria-checked', S.tx);
+}
+mq.addEventListener?.('change', ()=>{ if(S.mode==='system') applySettings(); });
+$('swatches').innerHTML = PRESETS.map(p=>'<button class="swb" type="button" data-c="'+p.c+'" style="--c:'+p.c+'"><span class="dotc"></span>'+p.name+'</button>').join('');
+document.querySelectorAll('.swb').forEach(b=>b.onclick=()=>{ S.accent=b.dataset.c; saveSettings(); applySettings(); });
+document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{ S.mode=b.dataset.mode; saveSettings(); applySettings(); });
+$('customColor').addEventListener('input', e=>{ S.accent=e.target.value; applySettings(); });
+$('customColor').addEventListener('change', ()=>saveSettings());
+$('glowSw').onclick = ()=>{ S.glow=!S.glow; saveSettings(); applySettings(); };
+$('motionSw').onclick = ()=>{ S.motion=!S.motion; saveSettings(); applySettings(); };
+$('txSw').onclick = ()=>{ S.tx=!S.tx; saveSettings(); applySettings(); };
+$('resetSettings').onclick = ()=>{ S={...DEFAULTS}; saveSettings(); applySettings(); };
+function motionOn(){ return S.motion && !rm.matches; }
+function openDrawer(){ closeHelp(); $('drawer').classList.add('open'); $('scrim').classList.add('open'); $('drawer').setAttribute('aria-hidden','false'); }
+function closeDrawer(){ $('drawer').classList.remove('open'); $('scrim').classList.remove('open'); $('drawer').setAttribute('aria-hidden','true'); }
+$('gearBtn').onclick = openDrawer; $('closeDrawer').onclick = closeDrawer; $('scrim').onclick = closeDrawer;
+applySettings();
+
+/* ---------- Navigation mit Fräser-Übergang ---------- */
+let view = 'home', txRunning = false;
+function show(v){
+  document.querySelectorAll('.view').forEach(s=>s.hidden = s.id!=='v-'+v);
+  const el = $('v-'+v); el.classList.remove('enter'); void el.offsetWidth; el.classList.add('enter');
+  document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on', b.dataset.v===v));
+  view = v; window.scrollTo(0,0);
+  document.title = v==='home' ? 'Zerspanungsrechner' : NAMES[v]+' · Zerspanungsrechner';
+  try{ history.replaceState(null,'', v==='home' ? location.pathname+location.search : '#'+v); }catch(e){}
+  if($('helpBox').hidden===false) renderHelp();
+}
+function go(v){
+  if(v===view || txRunning || !NAMES[v]) return;
+  closeHelp();
+  if(!(S.tx && motionOn()) || v==='home'){ show(v); return; }
+  txRunning = true;
+  const tx = $('tx'); $('txLabel').textContent = NAMES[v];
+  tx.classList.remove('run'); void tx.offsetWidth; tx.classList.add('run');
+  setTimeout(()=>show(v), 480);
+  setTimeout(()=>{ tx.classList.remove('run'); txRunning=false; }, 960);
+}
+document.addEventListener('click', e=>{ const b=e.target.closest('[data-v]'); if(b) go(b.dataset.v); });
+$('brand').onclick = ()=>go('home');
+$('goBtn').onclick = ()=>go('fraesen');
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeDrawer(); closeHelp(); } });
+
+/* ---------- Werkstoffe & Schneidstoffe ---------- */
 // vc-Richtwerte Fräsen in m/min: [HSS, Hartmetall, Keramik, CBN]
 const MAT={"Baustahl (S235)":[30,180,0,0],"Vergütungsstahl C45":[25,160,0,0],"42CrMo4":[20,140,0,0],"Edelstahl 1.4301 (V2A)":[15,110,0,0],"Edelstahl 1.4571 (V4A)":[12,90,0,0],"Werkzeugstahl gehärtet >50 HRC":[0,60,150,200],"Grauguss GJL":[25,150,500,600],"Sphäroguss GJS":[20,130,350,0],"Aluminium":[120,500,0,0],"Aluminium-Guss":[90,350,0,0],"Messing":[70,300,0,0],"Kupfer":[50,250,0,0],"Bronze":[40,200,0,0],"Titan":[10,50,0,0],"Kunststoff (POM, PA)":[100,300,0,0]};
 const CUT=["HSS","Hartmetall","Keramik","CBN (Bornitrid)"];
-const FAK={f:1,b:.7,d:1.3};const sel={f:null,b:null,d:null};
-const $=id=>document.getElementById(id);const num=id=>{const v=parseFloat(($(id).value||"").replace(",","."));return v>0?v:null};
-document.querySelectorAll(".cut").forEach(s=>{CUT.forEach((c,i)=>s.add(new Option(c,i)));s.value=1;s.onchange=calc});
-document.querySelectorAll(".mat").forEach(inp=>{const box=inp.nextElementSibling;
- const show=()=>{const q=inp.value.toLowerCase();box.innerHTML="";Object.keys(MAT).filter(m=>m.toLowerCase().includes(q)).forEach(m=>{const d=document.createElement("div");d.textContent=m;d.onmousedown=()=>{inp.value=m;sel[inp.dataset.k]=m;box.style.display="none";calc()};box.appendChild(d)});box.style.display=box.children.length?"block":"none"};
- inp.oninput=()=>{sel[inp.dataset.k]=MAT[inp.value]?inp.value:null;show();calc()};inp.onfocus=show;inp.onblur=()=>setTimeout(()=>box.style.display="none",150)});
-document.querySelectorAll("main input").forEach(i=>i.addEventListener("input",calc));
-function vcFor(k){const m=sel[k];if(!m)return null;const c=document.querySelector('.cut[data-k="'+k+'"]').value;const v=MAT[m][c];return v?v*FAK[k]:0}
+const FAK={f:1,b:.7,d:1.3}; const sel={f:null,b:null,d:null};
 const MC={"Baustahl":"#8a9099","C45":"#7d848c","42CrMo4":"#6f767e","Edelstahl":"#b9c0c8","Werkzeugstahl":"#5a5f66","Grauguss":"#55595e","Sphäroguss":"#63676c","Aluminium":"#d3d8de","Messing":"#d4b04a","Kupfer":"#c87533","Bronze":"#b08040","Titan":"#8e8a96","Kunststoff":"#efeadd"};
 const TC=["#a9afb6","#3f444c","#e6e0d3","#1f1f24"];
-const mc=m=>{if(!m)return"#9aa0a6";for(const k in MC)if(m.includes(k))return MC[k];return"#9aa0a6"};
-document.querySelectorAll(".flutes").forEach(g=>{let d="";for(let i=-2;i<14;i++){const y=i*12;d+="M-20 "+(y+14)+" L20 "+y}g.innerHTML='<path d="'+d+'" stroke="#0008" stroke-width="4" fill="none"/>'});
-document.querySelectorAll(".rot").forEach(g=>{let d="";for(let i=0;i<14;i++){const y=40+i*10;d+="M58 "+y+" L280 "+(y+2)}g.innerHTML='<path d="'+d+'" stroke="#0002" stroke-width="2" fill="none"/>'});
-function scene(k,n){const s=$("s-"+k);if(!s)return;const m=sel[k],c=+document.querySelector('.cut[data-k="'+k+'"]').value,col=mc(m);
- s.querySelectorAll(".wp,.chips circle").forEach(e=>e.setAttribute("fill",col));
- s.querySelectorAll(".tl").forEach(e=>e.setAttribute("fill",TC[c]));
- s.style.setProperty("--spd",(n?Math.min(2,Math.max(.08,300/n)):.6).toFixed(2)+"s");
- s.querySelector(".lbl").textContent=(m||"Werkstoff wählen")+" · "+CUT[c]+(n?" · "+Math.round(n)+" 1/min":"")}
-const box=(t,v,u)=>'<div class="r"><small>'+t+'</small><b>'+v+'</b><small>'+u+'</small></div>';
-function core(k,D,f2){let vc=num(k+"vc"),n=num(k+"n"),note="";
- if(!vc&&!n){const w=vcFor(k);if(w===0)note="⚠️ Schneidstoff für diesen Werkstoff nicht empfohlen.";else if(w)vc=w}
- if(n&&!vc)vc=Math.PI*D*n/1000;if(vc&&!n)n=vc*1000/(Math.PI*D);return{vc,n,note}}
+const mc = m=>{ if(!m) return "#9aa0a6"; for(const k in MC) if(m.includes(k)) return MC[k]; return "#9aa0a6"; };
+const num = id=>{ const v=parseFloat(($(id).value||"").replace(",",".")); return v>0 ? v : null; };
+const cutOf = k=> +document.querySelector('.cut[data-k="'+k+'"]').value;
+const fmtN = (x,d=0)=> x.toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+document.querySelectorAll('.cut').forEach(s=>{ CUT.forEach((c,i)=>s.add(new Option(c,i))); s.value=1; s.onchange=calc; });
+document.querySelectorAll('.mat').forEach(inp=>{
+  const k = inp.dataset.k; let box = null, hl = -1;
+  const close = ()=>{ if(box){ box.remove(); box=null; } hl=-1; };
+  const pick = m=>{ inp.value=m; sel[k]=m; close(); calc(); };
+  const open = ()=>{
+    const q = inp.value.trim().toLowerCase(), c = cutOf(k);
+    const list = Object.keys(MAT).filter(m=>m.toLowerCase().includes(q));
+    if(!box){ box=document.createElement('div'); box.className='sug'; inp.parentNode.appendChild(box); }
+    hl = -1;
+    box.innerHTML = list.length ? list.map((m,i)=>{ const v=MAT[m][c]; return '<button type="button" data-m="'+m+'" style="--i:'+i+'"><span class="sw" style="background:'+mc(m)+'"></span><b>'+m+'</b><small>'+(v?Math.round(v*FAK[k])+' m/min':'nicht empfohlen')+'</small></button>'; }).join('')
+      : '<div class="none">Kein Werkstoff gefunden</div>';
+    box.querySelectorAll('button').forEach(b=>b.onmousedown=e=>{ e.preventDefault(); pick(b.dataset.m); });
+  };
+  inp.addEventListener('input', ()=>{ sel[k]=MAT[inp.value]?inp.value:null; open(); calc(); });
+  inp.addEventListener('focus', open);
+  inp.addEventListener('blur', ()=>setTimeout(close,120));
+  inp.addEventListener('keydown', e=>{
+    if(!box) return; const bs=[...box.querySelectorAll('button')]; if(!bs.length) return;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); hl=(hl+(e.key==='ArrowDown'?1:-1)+bs.length)%bs.length; bs.forEach((b,i)=>b.classList.toggle('hl',i===hl)); bs[hl].scrollIntoView({block:'nearest'}); }
+    else if(e.key==='Enter'){ e.preventDefault(); pick((bs[hl]||bs[0]).dataset.m); }
+    else if(e.key==='Escape'){ close(); }
+  });
+});
+document.querySelectorAll('.calc input:not(.mat)').forEach(i=>i.addEventListener('input',calc));
+function vcFor(k){ const m=sel[k]; if(!m) return null; const v=MAT[m][cutOf(k)]; return v ? v*FAK[k] : 0; }
+
+/* ---------- Szenen ---------- */
+document.querySelectorAll('.flutes').forEach(g=>{let d="";for(let i=-2;i<14;i++){const y=i*12;d+="M-20 "+(y+14)+" L20 "+y}g.innerHTML='<path d="'+d+'" stroke="#0008" stroke-width="4" fill="none"/>'});
+document.querySelectorAll('.rot').forEach(g=>{let d="";for(let i=0;i<14;i++){const y=40+i*10;d+="M58 "+y+" L280 "+(y+2)}g.innerHTML='<path d="'+d+'" stroke="#0002" stroke-width="2" fill="none"/>'});
+function scene(k,n){
+  const s=$("s-"+k); const m=sel[k], c=cutOf(k), col=mc(m);
+  s.querySelectorAll(".wp,.schips circle").forEach(e=>e.setAttribute("fill",col));
+  s.querySelectorAll(".tl").forEach(e=>e.setAttribute("fill",TC[c]));
+  s.style.setProperty("--spd",(n?Math.min(2,Math.max(.08,300/n)):.6).toFixed(2)+"s");
+  s.querySelector(".lbl").textContent=(m||"Werkstoff wählen")+" · "+CUT[c];
+  $("spd-"+k).textContent = n ? fmtN(Math.round(n))+' 1/min' : 'Leerlauf';
+}
+
+/* ---------- Ergebnisse (Kacheln) ---------- */
+function tiles(id, list, msg, warn){
+  const box=$(id);
+  if(!list){ const sig='msg:'+msg; if(box.dataset.sig!==sig){ box.dataset.sig=sig; box.innerHTML='<div class="empty'+(warn?' warn':'')+'">'+svg(warn?'warn':'info')+'<span>'+msg+'</span></div>'; } return; }
+  const sig=list.map(t=>t[0]).join('|');
+  if(box.dataset.sig!==sig){
+    box.dataset.sig=sig;
+    box.innerHTML=list.map((t,i)=>'<div class="stat'+(t[3]?' main':'')+'" style="--i:'+i+'"><small>'+t[0]+'</small><b>'+t[1]+'</b><span>'+t[2]+'</span></div>').join('');
+    return;
+  }
+  box.querySelectorAll('.stat b').forEach((b,i)=>{ if(b.textContent!==list[i][1]){ b.textContent=list[i][1]; b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); } });
+}
+function core(k,D){
+  let vc=num(k+"vc"), n=num(k+"n"), note="";
+  if(!vc&&!n){ const w=vcFor(k); if(w===0) note="Dieser Schneidstoff wird für den Werkstoff nicht empfohlen."; else if(w) vc=w; }
+  if(n&&!vc) vc=Math.PI*D*n/1000;
+  if(vc&&!n) n=vc*1000/(Math.PI*D);
+  return {vc,n,note};
+}
 function calc(){
- let D=num("fD"),z=num("fz"),fz=num("ffz"),o="";
- scene("f",D?core("f",D).n:null);
- if(D&&z&&fz){const r=core("f",D);o+=box("Vorschub je Umdrehung",(fz*z).toFixed(3),"mm/U");
-  if(r.n){o+=box("Schnittgeschw. vc",r.vc.toFixed(0),"m/min")+box("Drehzahl n",Math.round(r.n),"1/min")+box("Vorschubgeschw. vf",Math.round(r.n*z*fz),"mm/min")}
-  else o+='<p class="hint" style="grid-column:1/-1">'+(r.note||"Werkstoff wählen oder vc/Drehzahl eingeben, dann kommen Drehzahl und vf dazu.")+'</p>'}
- else o='<p class="hint">Durchmesser, Zähnezahl und fz eingeben.</p>';$("fRes").innerHTML=o;
- [["b","bD","bf","bRes"],["d","dD","df","dRes"]].forEach(([k,a,b,id])=>{const D=num(a),f=num(b);let o="";scene(k,D?core(k,D).n:null);
-  if(D&&f){const r=core(k,D);if(r.n)o=box("Schnittgeschw. vc",r.vc.toFixed(0),"m/min")+box("Drehzahl n",Math.round(r.n),"1/min")+box("Vorschubgeschw. vf",Math.round(r.n*f),"mm/min");else o='<p class="hint">'+(r.note||"Werkstoff wählen oder vc/Drehzahl eingeben.")+'</p>'}
-  else o='<p class="hint">Durchmesser und Vorschub eingeben.</p>';$(id).innerHTML=o});
- pass()}
+  { const D=num("fD"), z=num("fz"), fz=num("ffz"); const r=D?core("f",D):{};
+    scene("f", r.n||null);
+    if(D&&z&&fz){
+      if(r.n) tiles("fRes",[["Drehzahl n",fmtN(Math.round(r.n)),"1/min",1],["Vorschubgeschw. vf",fmtN(Math.round(r.n*z*fz)),"mm/min",1],["Schnittgeschw. vc",fmtN(Math.round(r.vc)),"m/min"],["Vorschub je Umdrehung",fmtN(fz*z,3),"mm/U"]]);
+      else tiles("fRes",null, r.note||"Werkstoff wählen oder vc bzw. Drehzahl eingeben – dann kommen Drehzahl und vf dazu.", !!r.note);
+    } else tiles("fRes",null,"Fräser-Ø, Zähnezahl und Vorschub je Zahn eingeben.");
+  }
+  [["b","bD","bf","bRes"],["d","dD","df","dRes"]].forEach(([k,a,b,id])=>{
+    const D=num(a), f=num(b); const r=D?core(k,D):{};
+    scene(k, r.n||null);
+    if(D&&f){
+      if(r.n) tiles(id,[["Drehzahl n",fmtN(Math.round(r.n)),"1/min",1],["Vorschubgeschw. vf",fmtN(Math.round(r.n*f)),"mm/min",1],["Schnittgeschw. vc",fmtN(Math.round(r.vc)),"m/min"]]);
+      else tiles(id,null, r.note||"Werkstoff wählen oder vc bzw. Drehzahl eingeben.", !!r.note);
+    } else tiles(id,null,"Durchmesser und Vorschub eingeben.");
+  });
+}
+
+/* ---------- Passungen (ISO 286) ---------- */
 const R=[3,6,10,18,30,50,80,120,180,250,315,400,500];
 const IT={5:[4,5,6,8,9,11,13,15,18,20,23,25,27],6:[6,8,9,11,13,16,19,22,25,29,32,36,40],7:[10,12,15,18,21,25,30,35,40,46,52,57,63],8:[14,18,22,27,33,39,46,54,63,72,81,89,97],9:[25,30,36,43,52,62,74,87,100,115,130,140,155],10:[40,48,58,70,84,100,120,140,160,185,210,230,250],11:[60,75,90,110,130,160,190,220,250,290,320,360,400]};
 const ES={f:[-6,-10,-13,-16,-20,-25,-30,-36,-43,-50,-56,-62,-68],g:[-2,-4,-5,-6,-7,-9,-10,-12,-14,-15,-17,-18,-20]};
-function pass(){const M=num("pM"),t=($("pT").value||"").trim(),m=t.match(/^(JS|js|[HhGgFf])(\d{1,2})$/);
- if(!M||!m){$("pRes").innerHTML='<p class="hint">Nennmaß und Toleranz eingeben, z. B. 5 und H7.</p>';return}
- const i=R.findIndex(x=>M<=x),g=+m[2];if(i<0||!IT[g]){$("pRes").innerHTML='<p class="hint">Außerhalb des Bereichs.</p>';return}
- const T=IT[g][i],L=m[1],hole=L[0]===L[0].toUpperCase();let up,lo;
- if(L.toLowerCase()==="js"){up=T/2;lo=-T/2}else if(L==="H"){lo=0;up=T}else if(L==="h"){up=0;lo=-T}
- else{const e=ES[L.toLowerCase()][i];if(hole){lo=-e;up=lo+T}else{up=e;lo=up-T}}
- const mm=v=>(M+v/1000).toFixed(3);
- $("pRes").innerHTML='<h3>'+M+' '+t+' – '+(hole?"Bohrung":"Welle")+'</h3><div class="res">'+box("Oberes Abmaß",(up>0?"+":"")+up,"µm")+box("Unteres Abmaß",(lo>0?"+":"")+lo,"µm")+box("Größtmaß",mm(up),"mm")+box("Kleinstmaß",mm(lo),"mm")+'</div><p class="hint">Toleranzfeld: '+T+' µm (IT'+g+')</p>'}
-const NAMES={fraesen:"Fräsen",bohren:"Bohren",drehen:"Drehen",passung:"Passungen"};
+// bis 400 mm: Wellen k, m, n, p (unteres Abmaß) und Bohrungen K, P (oberes Abmaß, IT6/IT7)
+const EI={k:[0,1,1,1,2,2,2,3,3,4,4,4],m:[2,4,6,7,8,9,11,13,15,17,20,21],n:[4,8,10,12,15,17,20,23,27,31,34,37],p:[6,12,15,18,22,26,32,37,43,50,56,62]};
+const KH={6:[0,2,2,2,2,3,4,4,4,5,5,7],7:[0,3,5,6,6,7,9,10,12,13,16,17]};
+const PH={6:[-6,-9,-12,-15,-18,-21,-26,-30,-36,-41,-47,-51],7:[-6,-8,-9,-11,-14,-17,-21,-24,-28,-33,-36,-41]};
+function lim(L,g,M){
+  const i=R.findIndex(x=>M<=x); if(i<0||!IT[g]) return null;
+  const T=IT[g][i], hole=L[0]===L[0].toUpperCase(), l=L.toLowerCase(); let up,lo;
+  if(l==='js'){ up=T/2; lo=-T/2; }
+  else if(l==='h'){ if(hole){lo=0;up=T}else{up=0;lo=-T} }
+  else if(ES[l]){ const e=ES[l][i]; if(hole){lo=-e;up=lo+T}else{up=e;lo=up-T} }
+  else if(i<12 && !hole && EI[l] && !(l==='k'&&g>7)){ lo=EI[l][i]; up=lo+T; }
+  else if(i<12 && hole && L==='K' && KH[g]){ up=KH[g][i]; lo=up-T; }
+  else if(i<12 && hole && L==='P' && PH[g]){ up=PH[g][i]; lo=up-T; }
+  else return null;
+  return {up,lo,T,hole,name:L+g};
+}
+const sg = u=>(u>0?'+':u<0?'−':'±')+fmtN(Math.abs(u),Number.isInteger(u)?0:1);
+function pass(){
+  const M=num("pM"), t=($("pT").value||"").replace(/\s/g,''), out=$("pRes");
+  const m=t.match(/^(JS|js|[A-Za-z])(\d{1,2})(?:\/(JS|js|[A-Za-z])(\d{1,2}))?$/);
+  const empty=(msg,w)=>{ out.dataset.sig=''; out.innerHTML='<div class="empty'+(w?' warn':'')+'">'+svg(w?'warn':'info')+'<span>'+msg+'</span></div>'; };
+  if(!M||!m) return empty('Nennmaß und Toleranz eingeben, z. B. <b>5</b> und <b>H7</b> oder <b>H7/g6</b>.');
+  if(M>500) return empty('Das Nennmaß darf höchstens 500 mm sein.',1);
+  const codes=[[m[1],+m[2]]]; if(m[3]) codes.push([m[3],+m[4]]);
+  const parts=[]; for(const [L,g] of codes){ const r=lim(L,g,M); if(!r) return empty(L+g+' ist nicht hinterlegt. Möglich: H, h, JS, js, G, g, F, f (IT5–11, bis 500 mm) sowie K, P (IT6–7) und k, m, n, p (bis 400 mm).',1); parts.push(r); }
+  const mm = v=>fmtN(M+v/1000,3);
+  let h='';
+  const H=parts.find(p=>p.hole), W=parts.find(p=>!p.hole);
+  if(H&&W){
+    const mx=H.up-W.lo, mn=H.lo-W.up;
+    const kind = mn>=0?['Spielpassung','#2bf598']:mx<=0?['Presspassung','#ff3b5c']:['Übergangspassung','#ffb020'];
+    h+='<span class="fitkind" style="--fc:'+kind[1]+'"><i></i>'+kind[0]+'</span>';
+    h+='<div class="res" style="margin-bottom:6px">'
+      +'<div class="stat main" style="--i:0"><small>'+(mn>=0?'Kleinstspiel':'Größtübermaß')+'</small><b>'+fmtN(Math.abs(mn))+'</b><span>µm</span></div>'
+      +'<div class="stat main" style="--i:1"><small>'+(mx>0?'Größtspiel':'Kleinstübermaß')+'</small><b>'+fmtN(Math.abs(mx))+'</b><span>µm</span></div></div>';
+  }
+  parts.forEach((p,j)=>{
+    h+='<div class="sub-h">'+(p.hole?'Bohrung ':'Welle ')+'<span style="text-transform:none;letter-spacing:.04em">'+M+' '+p.name+'</span></div><div class="res">'
+      +'<div class="stat" style="--i:'+(j*4)+'"><small>Größtmaß</small><b>'+mm(p.up)+'</b><span>mm</span></div>'
+      +'<div class="stat" style="--i:'+(j*4+1)+'"><small>Kleinstmaß</small><b>'+mm(p.lo)+'</b><span>mm</span></div>'
+      +'<div class="stat" style="--i:'+(j*4+2)+'"><small>Oberes Abmaß</small><b>'+sg(p.up)+'</b><span>µm</span></div>'
+      +'<div class="stat" style="--i:'+(j*4+3)+'"><small>Unteres Abmaß</small><b>'+sg(p.lo)+'</b><span>µm</span></div></div>';
+  });
+  h+='<div class="sub-h">Toleranzfeld</div>'+viz(parts);
+  h+='<p class="note">'+parts.map(p=>p.name+': '+p.T+' µm Toleranz (IT'+p.name.replace(/\D/g,'')+')').join(' · ')+'. Bei kritischen Teilen mit dem Tabellenbuch gegenprüfen.</p>';
+  out.innerHTML=h;
+}
+function viz(parts){
+  const vals=[0]; parts.forEach(p=>vals.push(p.up,p.lo));
+  let mx=Math.max(...vals), mn=Math.min(...vals); const pad=(mx-mn)*.18||5; mx+=pad; mn-=pad;
+  const y=v=>18+(mx-v)/(mx-mn)*124;
+  let s='<svg class="tolviz" viewBox="0 0 320 160">';
+  s+='<line class="zl" x1="44" x2="306" y1="'+y(0)+'" y2="'+y(0)+'"/><text x="40" y="'+(y(0)+4)+'" text-anchor="end">0</text>';
+  parts.forEach((p,j)=>{
+    const x = parts.length>1 ? 90+j*120 : 145, col = p.hole?'var(--accent)':'var(--accent-2)';
+    const y1=y(p.up), hgt=Math.max(3,y(p.lo)-y1);
+    s+='<rect x="'+x+'" y="'+y1+'" width="72" height="'+hgt+'" rx="6" fill="'+col+'" fill-opacity=".28" stroke="'+col+'" stroke-width="1.5" style="animation-delay:'+(j*.12)+'s;filter:drop-shadow(0 0 6px var(--glow))"/>';
+    s+='<text x="'+(x+80)+'" y="'+(y1+4)+'">'+sg(p.up)+'</text><text x="'+(x+80)+'" y="'+(y1+hgt+4)+'">'+sg(p.lo)+'</text>';
+    s+='<text x="'+(x+36)+'" y="155" text-anchor="middle" style="font-weight:800;fill:var(--ink)">'+p.name+'</text>';
+  });
+  return s+'</svg>';
+}
+$("quick").innerHTML=['H7','h6','H7/g6','H7/h6','H7/k6','H7/p6'].map(q=>'<button type="button" data-q="'+q+'">'+q+'</button>').join('');
+document.querySelectorAll('#quick button').forEach(b=>b.onclick=()=>{ if(!num('pM')) $('pM').value=10; $('pT').value=b.dataset.q; pass(); });
+$("pM").addEventListener('input',pass); $("pT").addEventListener('input',pass);
+
+/* ---------- Hilfe ---------- */
 const HELP={
-start:{t:"Willkommen",e:"Dieser Rechner hilft dir, Schnittdaten fürs Fräsen, Bohren und Drehen zu bestimmen und ISO-Passungen nachzuschlagen.",a:["Öffne oben links das Menü und wähle einen Bereich.","Tippe in jedem Bereich auf das Fragezeichen, um Tipps zu sehen.","Alle Werte sind Richtwerte – im Zweifel gelten die Angaben des Werkzeugherstellers."]},
+home:{t:"Willkommen",e:"Dieser Rechner hilft dir, Schnittdaten fürs Fräsen, Bohren und Drehen zu bestimmen und ISO-Passungen nachzuschlagen.",a:["Oben einen Bereich wählen oder auf „Loslegen“ tippen.","Das Fragezeichen zeigt in jedem Bereich passende Tipps.","Alle Werte sind Richtwerte – im Zweifel gelten die Angaben des Werkzeugherstellers."]},
 fraesen:{t:"Fräsen",e:"Du gibst nur Fräserdurchmesser, Zähnezahl und Vorschub je Zahn ein. Wählst du Werkstoff und Schneidstoff, holt sich der Rechner die passende Schnittgeschwindigkeit. Daraus berechnet er: n = vc · 1000 / (π · D) und vf = n · z · fz. Alternativ kannst du vc oder die Drehzahl selbst eintragen.",
  a:["Herstellerangaben des Fräsers haben immer Vorrang vor diesen Richtwerten.","Kleine Fräser brauchen einen kleineren Vorschub je Zahn.","Bei Vollnut (Fräser voll im Material) oder langer Auskraglänge vc und fz reduzieren.","Prüfe die Maximaldrehzahl deiner Maschine – wird sie überschritten, vf passend herunterrechnen.","Alu mit Kühlschmierstoff oder Minimalmengenschmierung fräsen, Grauguss meist trocken.","Wenn möglich im Gleichlauf fräsen – das schont die Schneide."]},
 bohren:{t:"Bohren",e:"Mit Bohrerdurchmesser und Vorschub pro Umdrehung berechnet der Rechner die Drehzahl und die Vorschubgeschwindigkeit vf = n · f. Die Schnittgeschwindigkeit wird beim Bohren mit ca. 70 % des Fräswerts angesetzt.",
  a:["Als grober Anhalt für den Vorschub gilt f ≈ 0,01 bis 0,02 × D (mm/U).","Vorher zentrieren oder anbohren, damit der Bohrer nicht verläuft.","Bei tiefen Bohrungen (über ca. 3 × D) regelmäßig entspanen.","Ausreichend kühlen – vor allem bei Edelstahl.","Hartmetallbohrer brauchen eine stabile Aufspannung, nicht von Hand bohren."]},
 drehen:{t:"Drehen",e:"Du gibst den aktuellen Werkstückdurchmesser und den Vorschub pro Umdrehung ein. Daraus berechnet der Rechner die Drehzahl und die Vorschubgeschwindigkeit vf = n · f.",
  a:["Beim Plandrehen ändert sich der Durchmesser – damit auch die richtige Drehzahl (an der CNC: konstante Schnittgeschwindigkeit mit Drehzahlbegrenzung).","Die Maximaldrehzahl des Futters beachten.","Ohne Reitstock höchstens ca. 3 × D ausspannen.","Die Schneide muss genau auf Drehmitte stehen.","Schruppen mit großem Vorschub, Schlichten mit kleinem – der Eckenradius bestimmt mit, wie glatt die Oberfläche wird."]},
-passung:{t:"Passungen",e:"Gib Nennmaß und Toleranz ein, z. B. 5 und H7. Großbuchstaben stehen für Bohrungen, Kleinbuchstaben für Wellen. Der Rechner zeigt die Abmaße sowie das Größt- und Kleinstmaß.",
- a:["Unterstützt werden H, h, JS, js, G, g, F und f mit IT5 bis IT11, Nennmaße bis 500 mm.","Typische Kombination: H7/g6 ergibt eine Spielpassung (leicht drehbar).","Bei 20 °C messen – warme Teile messen sich größer.","Das Messmittel muss deutlich genauer sein als die Toleranz (z. B. Bügelmessschraube statt Messschieber)."]}};
-let cur="start";
-function renderHelp(){const h=HELP[cur];$("helpBox").innerHTML="<h3>"+h.t+"</h3><h4>So funktioniert's</h4><p>"+h.e+"</p><h4>Worauf du achten musst</h4><ul>"+h.a.map(x=>"<li>"+x+"</li>").join("")+'</ul><p class="about">Über die Website: kostenloser Zerspanungsrechner für die Werkstatt. Alles wird direkt in deinem Browser berechnet, nichts wird gespeichert oder verschickt. Die Werte sind Richtwerte und ersetzen keine Herstellerangaben.</p>'}
-function closeHelp(){$("helpBox").classList.remove("open");$("helpBtn").classList.remove("on")}
-$("helpBtn").onclick=e=>{e.stopPropagation();const o=!$("helpBox").classList.contains("open");if(o){renderHelp();$("helpBox").classList.add("open");$("helpBtn").classList.add("on")}else closeHelp()};
-document.addEventListener("click",e=>{if(!$("helpBox").contains(e.target)&&e.target!==$("helpBtn"))closeHelp()});
-function tog(){closeHelp();$("menu").classList.toggle("open");$("shade").classList.toggle("open");$("burger").classList.toggle("x")}
-document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{tog();document.querySelectorAll(".nav").forEach(x=>x.classList.remove("act"));b.classList.add("act");
- const p=b.dataset.p,go=()=>{cur=p;document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));$("p-"+p).classList.add("on");$("title").textContent=NAMES[p]};
- if(p===cur)return;
- if($("anim").checked){const it=$("intro");$("introT").textContent=NAMES[p];it.classList.remove("out");
-  setTimeout(()=>it.classList.add("show"),120);
-  setTimeout(()=>{go();window.scrollTo(0,0);it.classList.add("out");it.classList.remove("show")},1450);
-  setTimeout(()=>it.classList.remove("out"),2100)}else go()});
-const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
-$("dark").onchange=e=>{document.body.classList.toggle("dark",e.target.checked);ls("dark",e.target.checked)};
-$("anim").onchange=e=>{document.body.classList.toggle("noanim",!e.target.checked);ls("anim",e.target.checked)};
-if(ls("dark")!=="false"){$("dark").checked=true;document.body.classList.add("dark")}else document.body.classList.remove("dark")
-if(ls("anim")==="false"){$("anim").checked=false;document.body.classList.add("noanim")}
-$("pM").oninput=pass;$("pT").oninput=pass;calc();
-</script></body></html>
+passung:{t:"Passungen",e:"Gib Nennmaß und Toleranz ein, z. B. 5 und H7. Großbuchstaben stehen für Bohrungen, Kleinbuchstaben für Wellen. Mit einer Kombination wie H7/g6 zeigt der Rechner zusätzlich Spiel bzw. Übermaß und die Passungsart.",
+ a:["Unterstützt: H, h, JS, js, G, g, F, f mit IT5 bis IT11 bis 500 mm, dazu K, P (IT6–7) und k, m, n, p bis 400 mm.","H7/g6 ergibt eine Spielpassung (leicht drehbar), H7/k6 eine Übergangs- und H7/p6 eine Presspassung.","Bei 20 °C messen – warme Teile messen sich größer.","Das Messmittel muss deutlich genauer sein als die Toleranz (z. B. Bügelmessschraube statt Messschieber)."]}};
+function renderHelp(){ const h=HELP[view]; $('helpBox').innerHTML='<h3>'+h.t+'</h3><h4>So funktioniert’s</h4><p>'+h.e+'</p><h4>Worauf du achten musst</h4><ul>'+h.a.map((x,i)=>'<li style="--i:'+i+'">'+x+'</li>').join('')+'</ul><p class="about">Kostenloser Zerspanungsrechner für die Werkstatt. Alles wird direkt in deinem Browser berechnet, nichts wird gespeichert oder verschickt. Die Werte sind Richtwerte und ersetzen keine Herstellerangaben.</p>'; }
+function closeHelp(){ $('helpBox').hidden=true; $('helpBtn').classList.remove('on'); $('helpBtn').setAttribute('aria-expanded','false'); }
+$('helpBtn').onclick=e=>{ e.stopPropagation(); if($('helpBox').hidden){ renderHelp(); $('helpBox').hidden=false; $('helpBtn').classList.add('on'); $('helpBtn').setAttribute('aria-expanded','true'); } else closeHelp(); };
+document.addEventListener('click',e=>{ if(!$('helpBox').hidden && !$('helpBox').contains(e.target) && !$('helpBtn').contains(e.target)) closeHelp(); });
+
+/* ---------- Start ---------- */
+calc(); pass();
+const start = location.hash.slice(1);
+show(NAMES[start] ? start : 'home');
+</script>
+</body>
+</html>
